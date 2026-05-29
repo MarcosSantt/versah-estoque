@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Versah | Entrar</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F4F3EF;
+      --surface:   #FFFFFF;
+      --border:    #E2DDD3;
+      --muted:     #D1CBBB;
+      --subtle:    #858175;
+      --dim:       #6A6658;
+      --secondary: #6A6658;
+      --primary:   #2C2A26;
+      --bright:    #1A1815;
+      --accent:    #C3A365;
+      --green:     #22c55e;
+      --red:       #ef4444;
+      --mono:      'DM Mono', monospace;
+      --sans:      'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--primary);
+      font-family: var(--sans);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* ── Layout central ── */
+    .auth-wrapper {
+      width: 100%;
+      max-width: 420px;
+    }
+
+    /* ── Logo e título ── */
+    .auth-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .auth-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .auth-title {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 22px;
+      color: var(--bright);
+      letter-spacing: -0.01em;
+    }
+    .auth-sub {
+      font-size: 13px;
+      color: var(--subtle);
+      margin-top: 4px;
+    }
+
+    /* ── Card ── */
+    .auth-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+    }
+
+    /* ── Tabs login/cadastro ── */
+    .tab-bar {
+      display: flex;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 28px;
+      gap: 4px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--subtle);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--sans);
+    }
+    .tab-btn.ativo {
+      background: var(--surface);
+      color: var(--bright);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    /* ── Formulário ── */
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--dim);
+      font-family: var(--mono);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap input {
+      width: 100%;
+      padding: 13px 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--primary);
+      font-size: 16px;
+      font-family: var(--sans);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input-wrap input::placeholder { color: var(--muted); }
+    .input-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(195, 163, 101, 0.18);
+    }
+    .input-wrap input.erro { border-color: var(--red); }
+    .toggle-senha {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--subtle);
+      font-size: 18px;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .toggle-senha:hover { color: var(--dim); transform: translateY(-50%) scale(1.1); }
+
+    /* ── Forgot password ── */
+    .esqueci {
+      display: block;
+      text-align: right;
+      font-size: 12px;
+      color: var(--subtle);
+      margin-top: -8px;
+      margin-bottom: 16px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.15s;
+      background: none;
+      border: none;
+      font-family: var(--sans);
+    }
+    .esqueci:hover { color: var(--accent); }
+
+    /* ── Botão principal ── */
+    .btn-auth {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: filter 0.15s, transform 0.1s;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-auth:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .btn-auth:active { transform: translateY(0); }
+    .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn-auth.loading .spinner { display: block; }
+    .btn-auth.loading .btn-text { opacity: 0.7; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Divisor (separador) ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .divider span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+    /* ── Google btn ── */
+    .btn-google {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--primary);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-google:hover { background: var(--bg); transform: translateY(-1px); }
+    .btn-google:active { transform: translateY(0); }
+    .google-icon {
+      width: 18px; height: 18px;
+    }
+
+    /* ── Alerta de erro ── */
+    .alerta {
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .alerta.erro  { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .alerta.ok    { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .alerta.show  { display: flex; }
+
+    /* ── Footer ── */
+    .auth-footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── Painel de recuperação de senha ── */
+    .recovery-panel {
+      display: none;
+    }
+    .recovery-panel.visible { display: block; }
+    .recovery-back {
+      background: none;
+      border: none;
+      font-size: 13px;
+      color: var(--subtle);
+      cursor: pointer;
+      font-family: var(--sans);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 20px;
+      padding: 0;
+      transition: color 0.15s;
+    }
+    .recovery-back:hover { color: var(--accent); }
+    .recovery-title {
+      font-family: var(--mono);
+      font-size: 16px;
+      color: var(--bright);
+      margin-bottom: 8px;
+    }
+    .recovery-desc {
+      font-size: 13px;
+      color: var(--subtle);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #1A1815;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      display: flex; align-items: center; gap: 8px;
+      z-index: 9999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.sucesso { border-left: 3px solid var(--green); }
+    .toast.erro    { border-left: 3px solid var(--red); }
+
+    /* ── Forças da senha ── */
+    .senha-forca {
+      margin-top: 8px;
+      display: none;
+    }
+    .senha-forca.visible { display: block; }
+    .forca-bar {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .forca-seg {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .forca-label { font-size: 11px; color: var(--subtle); font-family: var(--mono); }
+
+    /* ── Checklist de senha ── */
+    .senha-checklist {
+      margin-top: 6px;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .senha-checklist.visible { display: flex; }
+    .check-item {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .check-item.ok { color: var(--green); }
+    .check-item .c { font-size: 10px; }
+
+    @media (max-width: 480px) {
+      .auth-card { padding: 28px 20px; border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="auth-wrapper">
+
+  <!-- Logo -->
+  <div class="auth-header">
+    <div class="auth-logo">
+      <svg width="40" height="40" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0C5.373 0 0 5.373 0 12C0 15.9 1.87 19.37 4.77 21.6L12 36L19.23 21.6C22.13 19.37 24 15.9 24 12C24 5.373 18.627 0 12 0Z" fill="#C3A365"/>
+        <circle cx="12" cy="12" r="5" fill="#6A6658"/>
+      </svg>
+    </div>
+    <div class="auth-title">Versah · EstoqueControl</div>
+    <div class="auth-sub">Gestão de materiais e insumos</div>
+  </div>
+
+  <!-- Card principal -->
+  <div class="auth-card">
+
+    <!-- Alerta global -->
+    <div class="alerta" id="alerta"></div>
+
+    <!-- ───── PAINEL NORMAL (login / cadastro) ───── -->
+    <div id="painel-auth">
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn ativo" id="tab-login" onclick="mostrarAba('login')">Entrar</button>
+        <button class="tab-btn" id="tab-cadastro" onclick="mostrarAba('cadastro')">Criar conta</button>
+      </div>
+
+      <!-- ─── FORMULÁRIO LOGIN ─── -->
+      <div id="form-login">
+        <div class="form-group">
+          <label>E-mail</label>
+          <div class="input-wrap">
+            <input type="email" id="login-email" placeholder="seu@email.com"
+                   onkeydown="if(event.key==='Enter') entrar()" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <div class="input-wrap">
+            <input type="password" id="login-senha" placeholder="••••••••"
+                   onkeydown="if(event.key==='Enter') entrar()" />
+            <button class="toggle-senha" type="button" onclick="toggleSenha('login-senha', this)" title="Mostrar/ocultar senha">👁</button>
+          </div>
+        </div>
+        <button class="esqueci" onclick="mostrarRecuperacao()">Esqueci minha senha</button>
+        <button class="btn-auth" id="btn-entrar" onclick="entrar()">
+          <span class="spinner"></span>
+          <span class="btn-text">Entrar</span>
+        </button>
+        <div class="divider"><span>ou continue com</span></div>
+        <button class="btn-google" onclick="entrarGoogle()">
+          <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Continuar com Google
+        </button>
+      </div>
+
+      <!-- ─── FORMULÁRIO CADASTRO ─── -->
+      <div id="form-cadastro" style="display:none">
+        <div class="form-group">
+          <label>Nome completo</label>
+          <div class="input-wrap">
+            <input type="text" id="cad-nome" placeholder="Seu nome" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>E-mail</label>
+          <div class="input-wrap">
+            <input type="email" id="cad-email" placeholder="seu@email.com" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Senha</label>
+          <div class="input-wrap">
+            <input type="password" id="cad-senha" placeholder="Mínimo 8 caracteres"
+                   oninput="verificarForca(this.value)" />
+            <button class="toggle-senha" type="button" onclick="toggleSenha('cad-senha', this)" title="Mostrar/ocultar senha">👁</button>
+          </div>
+          <!-- Barra de força da senha -->
+          <div class="senha-forca" id="forca-wrap">
+            <div class="forca-bar">
+              <div class="forca-seg" id="f1"></div>
+              <div class="forca-seg" id="f2"></div>
+              <div class="forca-seg" id="f3"></div>
+              <div class="forca-seg" id="f4"></div>
+            </div>
+            <div class="forca-label" id="forca-label">Fraca</div>
+          </div>
+          <div class="senha-checklist" id="checklist">
+            <div class="check-item" id="chk-len"><span class="c">○</span> Mínimo 8 caracteres</div>
+            <div class="check-item" id="chk-upper"><span class="c">○</span> Uma letra maiúscula</div>
+            <div class="check-item" id="chk-num"><span class="c">○</span> Um número</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Confirmar senha</label>
+          <div class="input-wrap">
+            <input type="password" id="cad-confirma" placeholder="••••••••"
+                   onkeydown="if(event.key==='Enter') cadastrar()" />
+            <button class="toggle-senha" type="button" onclick="toggleSenha('cad-confirma', this)" title="Mostrar/ocultar senha">👁</button>
+          </div>
+        </div>
+        <button class="btn-auth" id="btn-cadastrar" onclick="cadastrar()">
+          <span class="spinner"></span>
+          <span class="btn-text">Criar conta</span>
+        </button>
+        <div class="divider"><span>ou continue com</span></div>
+        <button class="btn-google" onclick="entrarGoogle()">
+          <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+          </svg>
+          Continuar com Google
+        </button>
+      </div>
+
+    </div><!-- /painel-auth -->
+
+    <!-- ───── PAINEL RECUPERAÇÃO DE SENHA ───── -->
+    <div class="recovery-panel" id="painel-recuperacao">
+      <button class="recovery-back" onclick="mostrarAuth()">← Voltar</button>
+      <div class="recovery-title">Recuperar senha</div>
+      <p class="recovery-desc">
+        Informe seu e-mail e enviaremos um link para você criar uma nova senha.
+      </p>
+      <div class="form-group">
+        <label>E-mail</label>
+        <div class="input-wrap">
+          <input type="email" id="rec-email" placeholder="seu@email.com"
+                 onkeydown="if(event.key==='Enter') enviarRecuperacao()" />
+        </div>
+      </div>
+      <button class="btn-auth" id="btn-recuperar" onclick="enviarRecuperacao()">
+        <span class="spinner"></span>
+        <span class="btn-text">Enviar link de recuperação</span>
+      </button>
+    </div>
+
+  </div><!-- /auth-card -->
+
+  <div class="auth-footer">
+    Versah EstoqueControl &nbsp;·&nbsp; Dados salvos com segurança
+  </div>
+
+</div><!-- /auth-wrapper -->
+
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════
+     FIREBASE SDK — substitua pela sua config!
+     ══════════════════════════════════════════════ -->
+<script type="module">
+  // ─── IMPORTE SEU firebase-config.js quando tiver o Firebase configurado ───
+  // import { auth, db } from './firebase-config.js';
+  // import { signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  //          sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,
+  //          updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ────────────────────────────────────────────────
+  // MODO DEMO — sem Firebase
+  // Quando integrar o Firebase, remova este bloco
+  // e descomente as funções reais abaixo
+  // ────────────────────────────────────────────────
+  window._modoDemo = true;
+
+  window.entrar = async function() {
+    const email = document.getElementById('login-email').value.trim();
+    const senha  = document.getElementById('login-senha').value;
+    if (!email || !senha) return showAlerta('Preencha e-mail e senha.', 'erro');
+    setLoading('btn-entrar', true);
+    await delay(1200);
+    setLoading('btn-entrar', false);
+    // Com Firebase real: signInWithEmailAndPassword(auth, email, senha)
+    showAlerta('✓ Login realizado! Redirecionando...', 'ok');
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+  };
+
+  window.cadastrar = async function() {
+    const nome     = document.getElementById('cad-nome').value.trim();
+    const email    = document.getElementById('cad-email').value.trim();
+    const senha    = document.getElementById('cad-senha').value;
+    const confirma = document.getElementById('cad-confirma').value;
+
+    if (!nome)               return showAlerta('Informe seu nome.', 'erro');
+    if (!email)              return showAlerta('Informe seu e-mail.', 'erro');
+    if (senha.length < 8)    return showAlerta('A senha precisa ter ao menos 8 caracteres.', 'erro');
+    if (senha !== confirma)  return showAlerta('As senhas não coincidem.', 'erro');
+
+    setLoading('btn-cadastrar', true);
+    await delay(1400);
+    setLoading('btn-cadastrar', false);
+    // Com Firebase real: createUserWithEmailAndPassword(auth, email, senha)
+    //                    depois: updateProfile(user, { displayName: nome })
+    showAlerta('✓ Conta criada! Redirecionando...', 'ok');
+    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+  };
+
+  window.entrarGoogle = async function() {
+    showToast('Login com Google disponível após configurar o Firebase.', 'sucesso');
+    // Com Firebase real:
+    // const provider = new GoogleAuthProvider();
+    // await signInWithPopup(auth, provider);
+    // window.location.href = 'index.html';
+  };
+
+  window.enviarRecuperacao = async function() {
+    const email = document.getElementById('rec-email').value.trim();
+    if (!email) return showAlerta('Informe seu e-mail.', 'erro');
+    setLoading('btn-recuperar', true);
+    await delay(1200);
+    setLoading('btn-recuperar', false);
+    // Com Firebase real: sendPasswordResetEmail(auth, email)
+    showAlerta('✓ Link enviado! Verifique seu e-mail.', 'ok');
+  };
+
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+
+<script>
+  // ─────────────────────────────────────────────
+  // CONTROLE DE ABAS
+  // ─────────────────────────────────────────────
+  function mostrarAba(aba) {
+    limparAlerta();
+    document.getElementById('tab-login').classList.toggle('ativo', aba === 'login');
+    document.getElementById('tab-cadastro').classList.toggle('ativo', aba === 'cadastro');
+    document.getElementById('form-login').style.display    = aba === 'login'    ? 'block' : 'none';
+    document.getElementById('form-cadastro').style.display = aba === 'cadastro' ? 'block' : 'none';
+  }
+
+  function mostrarRecuperacao() {
+    limparAlerta();
+    document.getElementById('painel-auth').style.display = 'none';
+    document.getElementById('painel-recuperacao').classList.add('visible');
+    setTimeout(() => document.getElementById('rec-email').focus(), 100);
+  }
+
+  function mostrarAuth() {
+    limparAlerta();
+    document.getElementById('painel-recuperacao').classList.remove('visible');
+    document.getElementById('painel-auth').style.display = 'block';
+  }
+
+  // ─────────────────────────────────────────────
+  // SHOW / HIDE SENHA
+  // ─────────────────────────────────────────────
+  function toggleSenha(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const mostrar = input.type === 'password';
+    input.type = mostrar ? 'text' : 'password';
+    btn.textContent = mostrar ? '🙈' : '👁';
+  }
+
+  // ─────────────────────────────────────────────
+  // FORÇA DA SENHA
+  // ─────────────────────────────────────────────
+  function verificarForca(senha) {
+    const wrap = document.getElementById('forca-wrap');
+    const checklist = document.getElementById('checklist');
+
+    if (!senha) {
+      wrap.classList.remove('visible');
+      checklist.classList.remove('visible');
+      return;
+    }
+    wrap.classList.add('visible');
+    checklist.classList.add('visible');
+
+    const temLen    = senha.length >= 8;
+    const temUpper  = /[A-Z]/.test(senha);
+    const temNum    = /[0-9]/.test(senha);
+    const temEspec  = /[^A-Za-z0-9]/.test(senha);
+
+    // Checklist
+    setCheck('chk-len',   temLen);
+    setCheck('chk-upper', temUpper);
+    setCheck('chk-num',   temNum);
+
+    // Score
+    const score = [temLen, temUpper, temNum, temEspec].filter(Boolean).length;
+    const cores  = ['#ef4444','#f59e0b','#C3A365','#22c55e'];
+    const labels = ['Fraca','Razoável','Boa','Forte'];
+
+    ['f1','f2','f3','f4'].forEach((id, i) => {
+      document.getElementById(id).style.background = i < score ? cores[score-1] : 'var(--border)';
+    });
+    document.getElementById('forca-label').textContent = labels[score-1] || 'Fraca';
+    document.getElementById('forca-label').style.color = cores[score-1] || '#ef4444';
+  }
+
+  function setCheck(id, ok) {
+    const el = document.getElementById(id);
+    el.classList.toggle('ok', ok);
+    el.querySelector('.c').textContent = ok ? '✓' : '○';
+  }
+
+  // ─────────────────────────────────────────────
+  // LOADING STATE
+  // ─────────────────────────────────────────────
+  function setLoading(btnId, state) {
+    const btn = document.getElementById(btnId);
+    btn.disabled = state;
+    btn.classList.toggle('loading', state);
+  }
+
+  // ─────────────────────────────────────────────
+  // ALERTAS E TOAST
+  // ─────────────────────────────────────────────
+  function showAlerta(msg, tipo) {
+    const el = document.getElementById('alerta');
+    el.textContent = msg;
+    el.className = `alerta ${tipo} show`;
+  }
+  function limparAlerta() {
+    document.getElementById('alerta').className = 'alerta';
+  }
+
+  let toastTimeout;
+  function showToast(msg, tipo = 'sucesso') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = `toast ${tipo} show`;
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => el.classList.remove('show'), 3500);
+  }
+</script>
+</body>
+</html>

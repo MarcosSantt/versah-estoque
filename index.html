@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Versah | EstoqueControl</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Paleta Clínica Versah */
+      --bg:        #F4F3EF;
+      --surface:   #FFFFFF;
+      --border:    #E2DDD3;
+      --muted:     #D1CBBB;
+      --subtle:    #858175;
+      --dim:       #6A6658;
+      --secondary: #6A6658;
+      --primary:   #2C2A26;
+      --bright:    #1A1815;
+      --accent:    #C3A365;
+      
+      --green:     #22c55e;
+      --red:       #ef4444;
+      --yellow:    #f59e0b;
+      --mono:      'DM Mono', monospace;
+      --sans:      'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--primary);
+      font-family: var(--sans);
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 99px; }
+
+    /* ── Header ── */
+    #header {
+      background: #6A6658;
+      border-bottom: 3px solid var(--accent);
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
+      gap: 16px;
+    }
+    .header-logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .header-title {
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 20px;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+    }
+    .header-sub {
+      font-size: 12px;
+      color: #E2DDD3;
+      margin-top: 2px;
+      padding-left: 48px;
+    }
+
+    /* ── Container ── */
+    #app { max-width: 1100px; margin: 0 auto; padding: 32px 24px 0; }
+
+    /* ── KPI Cards ── */
+    #kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: box-shadow 0.3s;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .kpi-card.alerta {
+      border-color: #ef444444;
+      box-shadow: 0 0 20px #ef444415;
+    }
+    .kpi-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0; /* Impede que o ícone amasse no mobile */
+    }
+    .kpi-value {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--bright);
+    }
+    .kpi-label { font-size: 12px; color: var(--subtle); margin-top: 2px; line-height: 1.2; }
+
+    /* ── Botões ── */
+    button { cursor: pointer; transition: filter 0.15s, transform 0.1s; font-family: var(--sans); }
+    button:hover { filter: brightness(1.1); transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 20px; border-radius: 10px;
+      border: none; color: #fff;
+      font-size: 14px; font-weight: 600;
+      background: var(--accent);
+      white-space: nowrap;
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 20px; border-radius: 10px;
+      border: 1px solid var(--border); color: var(--secondary);
+      font-size: 14px; font-weight: 600;
+      background: var(--surface);
+    }
+
+    /* ── Formulário ── */
+    #form-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--accent);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    #form-panel.visible { display: block; }
+    #form-panel h3 {
+      font-family: var(--mono);
+      font-size: 16px;
+      color: var(--bright);
+      margin-bottom: 24px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 20px;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--dim);
+      font-family: var(--mono);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+    input[type=text], input[type=number] {
+      width: 100%;
+      padding: 12px 14px; /* Aumentado um pouco para facilitar toque */
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--primary);
+      font-size: 16px; /* 16px OBRIGATÓRIO PARA EVITAR ZOOM AUTOMÁTICO NO IPHONE */
+      font-family: var(--sans);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    input::placeholder { color: var(--muted); }
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(195, 163, 101, 0.2);
+    }
+    .calc-preview {
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      height: 46px;
+      margin-top: 22px;
+    }
+    .calc-preview strong { color: var(--accent); font-size: 16px; margin: 0 4px; }
+    .calc-preview small { font-size: 11px; color: var(--dim); }
+    .form-actions { display: flex; gap: 12px; margin-top: 24px; }
+
+    /* ── Filtros ── */
+    #filtros {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      align-items: center;
+      flex-wrap: wrap; /* Evita quebra ruim no celular */
+    }
+    #filtros span { color: var(--subtle); font-size: 13px; margin-right: 4px; }
+    .filtro-btn {
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .filtro-btn.ativo-todos { background: var(--accent); border-color: transparent; color: #fff; }
+    .filtro-btn.ativo-alerta { background: var(--red); border-color: transparent; color: #fff; }
+
+    /* ── Tabela ── */
+    #table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    .table-scroll { 
+      overflow-x: auto; 
+      -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; /* Garante estrutura em telas pequenas */ }
+    thead tr { background: var(--bg); }
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      color: var(--dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    th.center { text-align: center; }
+    td { padding: 14px 16px; vertical-align: middle; border-bottom: 1px solid var(--border); }
+    tbody tr {
+      transition: background 0.15s;
+    }
+    tbody tr:hover td { background: rgba(195, 163, 101, 0.08); }
+    tbody tr.alerta-row { background: #ef444408; }
+    .table-footer {
+      padding: 12px 16px;
+      background: var(--surface);
+      font-size: 11px;
+      color: var(--subtle);
+    }
+
+    /* ── Células especiais ── */
+    .cell-nome { font-weight: 600; color: var(--bright); white-space: nowrap; }
+    .cell-nome .dot { color: var(--red); margin-right: 6px; }
+    .cell-mono { font-family: var(--mono); color: var(--secondary); }
+    .cell-atual { font-family: var(--mono); font-weight: 600; }
+    .cell-atual.alerta { color: var(--red); }
+    .progress-wrap { margin-top: 5px; height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; min-width: 80px; }
+    .progress-bar { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+    .cell-comprar { font-family: var(--mono); font-weight: 700; font-size: 15px; }
+    .cell-comprar.need { color: var(--yellow); }
+    .cell-comprar.ok   { color: var(--green); }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 4px 8px; border-radius: 99px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .badge.ok    { background: #dcfce7; color: #16a34a; }
+    .badge.repor { background: #fee2e2; color: #dc2626; }
+
+    /* ── Action buttons ── */
+    .action-wrap { display: flex; gap: 8px; justify-content: center; }
+    .action-btn {
+      width: 36px; height: 36px; /* Aumentado para melhor toque no celular */
+      border-radius: 8px;
+      font-size: 14px; font-weight: 700;
+      border: 1px solid;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0;
+      background: var(--surface);
+    }
+    .action-btn.entrada { color: var(--green); border-color: #22c55e44; }
+    .action-btn.entrada:hover { background: #22c55e11; }
+    .action-btn.saida   { color: var(--red); border-color: #ef444444; }
+    .action-btn.saida:hover { background: #ef444411; }
+    .action-btn.edit    { color: var(--accent); border-color: rgba(195, 163, 101, 0.4); }
+    .action-btn.edit:hover { background: rgba(195, 163, 101, 0.1); }
+    .action-btn.del     { color: var(--subtle); border-color: var(--border); }
+    .action-btn.del:hover { background: var(--bg); }
+
+    /* ── Modais ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500;
+      backdrop-filter: blur(2px);
+      padding: 16px; /* Impede que modal encoste na borda em telas curtas */
+    }
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 100%;
+      max-width: 380px; /* Flexível para celular */
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+    .modal-box h2 { font-family: var(--mono); font-size: 20px; margin-bottom: 4px; color: var(--bright); }
+    .modal-box p  { color: var(--dim); font-size: 13px; margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .modal-actions button { flex: 1; padding: 12px; }
+    .modal-actions .btn-confirm { border: none; color: #fff; font-weight: 600; font-size: 14px; border-radius: 10px; }
+
+    /* ── Modal de confirmação de exclusão ── */
+    #modal-delete .modal-box {
+      border-top: 3px solid var(--red);
+    }
+    #modal-delete h2 { color: var(--red); }
+    #modal-delete p { margin-bottom: 8px; }
+    #modal-delete .nome-item {
+      display: block;
+      font-weight: 600;
+      color: var(--bright);
+      font-family: var(--mono);
+      font-size: 15px;
+      margin-bottom: 20px;
+      padding: 10px 14px;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      word-break: break-all;
+    }
+
+    /* ── Histórico ── */
+    #historico-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      display: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+    #historico-panel.visible { display: block; }
+    #historico-panel h3 {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .hist-item {
+      display: flex; align-items: center; gap: 12px;
+      font-size: 13px; padding: 10px 12px;
+      background: var(--bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      flex-wrap: wrap; /* Permite que infos de histórico quebrem linha */
+    }
+    .hist-badge {
+      font-family: var(--mono); font-size: 11px;
+      padding: 2px 8px; border-radius: 99px; font-weight: 700;
+      white-space: nowrap;
+    }
+    .hist-badge.entrada { background: #dcfce7; color: var(--green); }
+    .hist-badge.saida   { background: #fee2e2; color: var(--red); }
+    .hist-nome  { color: var(--primary); flex: 1; min-width: 120px; font-weight: 500; }
+    .hist-qtd   { font-family: var(--mono); color: var(--secondary); font-weight: 600; }
+    .hist-obs   { color: var(--subtle); font-size: 12px; width: 100%; margin-top: 4px; display: block; }
+    .hist-hora  { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto; }
+
+    /* ── Vazio ── */
+    .empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* ─────────────────────────────────────────────
+       MEDIA QUERIES (RESPONSIVIDADE)
+       ───────────────────────────────────────────── */
+    
+    /* Telas Médias (Tablets) */
+    @media (max-width: 900px) {
+      #kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Telas Pequenas (Celulares) */
+    @media (max-width: 600px) {
+      #header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
+      .header-sub { padding-left: 0; margin-top: 8px; }
+      .btn-primary { width: 100%; margin-top: 8px; }
+      
+      #app { padding: 20px 16px 0; }
+      #kpi-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; } /* Inputs empilhados no mobile */
+      
+      .form-actions { flex-direction: column-reverse; } /* Botão primário fica por cima no celular */
+      .form-actions button { width: 100%; }
+
+      .modal-actions { flex-direction: column-reverse; gap: 8px; }
+      .modal-actions button { width: 100%; }
+      
+      /* O histórico precisa se adaptar caso as observações sejam longas */
+      .hist-item { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .hist-hora { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <div class="header-logo">
+      <div class="logo-icon">
+        <svg width="32" height="32" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C12 0 2 12 2 22C2 30 12 36 12 36C12 36 22 30 22 22C22 12 12 0 12 0Z" stroke="#C3A365" stroke-width="1.5"/>
+          <path d="M12 6C12 6 6 15 6 23C6 29 12 33 12 33C12 33 18 29 18 23C18 15 12 6 12 6Z" stroke="#C3A365" stroke-width="1.5"/>
+          <path d="M12 14C12 14 9 20 9 24C9 27 12 29 12 29C12 29 15 27 15 24C15 20 12 14 12 14Z" fill="#C3A365"/>
+        </svg>
+      </div>
+      <span class="header-title">Clínica Versah | Estoque</span>
+    </div>
+    <p class="header-sub">Sistema de Controle de Entradas e Saídas</p>
+  </div>
+  <button class="btn-primary" onclick="abrirFormNovo()">+ Novo Material</button>
+</div>
+
+<div id="app">
+
+  <div id="kpi-grid">
+    <div class="kpi-card" id="kpi-total">
+      <div class="kpi-icon" style="background:rgba(195, 163, 101, 0.15); color: var(--accent);">📋</div>
+      <div>
+        <div class="kpi-value" id="kpi-total-val">0</div>
+        <div class="kpi-label">Total de Itens</div>
+      </div>
+    </div>
+    <div class="kpi-card" id="kpi-alerta">
+      <div class="kpi-icon" style="background:#ef444415; color: var(--red);">⚠️</div>
+      <div>
+        <div class="kpi-value" id="kpi-alerta-val" style="color:var(--red)">0</div>
+        <div class="kpi-label">Itens em Alerta</div>
+      </div>
+    </div>
+    <div class="kpi-card" id="kpi-comprar">
+      <div class="kpi-icon" style="background:#f59e0b15; color: var(--yellow);">🛒</div>
+      <div>
+        <div class="kpi-value" id="kpi-comprar-val" style="color:var(--yellow)">0</div>
+        <div class="kpi-label">Unidades a Comprar</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="form-panel">
+    <h3 id="form-title">+ Novo Material</h3>
+    <div class="form-grid">
+      <div class="full">
+        <label>Nome do Material *</label>
+        <input type="text" id="f-nome" placeholder="Ex: Parafusos M8" />
+      </div>
+      <div>
+        <label>Qtd. Mínima (segurança) *</label>
+        <input type="number" id="f-minimo" min="0" placeholder="Ex: 50" oninput="atualizarPreview()" />
+      </div>
+      <div>
+        <label>Estoque Atual *</label>
+        <input type="number" id="f-atual" min="0" placeholder="Ex: 120" oninput="atualizarPreview()" />
+      </div>
+      <div>
+        <label>Estoque Ideal (meta) *</label>
+        <input type="number" id="f-ideal" min="0" placeholder="Ex: 500" oninput="atualizarPreview()" />
+      </div>
+      <div class="full">
+        <div class="calc-preview">
+          A comprar: <strong id="preview-comprar">0</strong>
+          <small>(ideal − atual)</small>
+        </div>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-secondary" onclick="fecharForm()">Cancelar</button>
+      <button class="btn-primary" onclick="salvarItem()">Salvar</button>
+    </div>
+  </div>
+
+  <div id="filtros">
+    <span>Filtrar:</span>
+    <button class="filtro-btn ativo-todos" id="btn-filtro-todos" onclick="setFiltro('todos')">Todos</button>
+    <button class="filtro-btn" id="btn-filtro-alerta" onclick="setFiltro('alerta')">⚠ Reposição</button>
+  </div>
+
+  <div id="table-wrap">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th>Mínimo</th>
+            <th>Atual</th>
+            <th>Ideal</th>
+            <th>A Comprar *</th>
+            <th>Status</th>
+            <th class="center">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabela-body">
+          <tr><td colspan="7" class="empty-state">Nenhum item cadastrado.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer">* A Comprar = Estoque Ideal − Estoque Atual</div>
+  </div>
+
+  <div id="historico-panel">
+    <h3>Histórico de Movimentações</h3>
+    <div id="historico-lista"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-mov" style="display:none" onclick="fecharModalMov(event)">
+  <div class="modal-box" id="modal-mov-box">
+    <h2 id="modal-mov-titulo"></h2>
+    <p id="modal-mov-info"></p>
+    <label>Quantidade</label>
+    <input type="number" id="modal-mov-qtd" min="1" placeholder="Ex: 50"
+           style="width:100%;margin-bottom:16px"
+           onkeydown="if(event.key==='Enter') confirmarMov()" />
+    <label>Observação (opcional)</label>
+    <input type="text" id="modal-mov-obs" placeholder="Ex: Compra NF-001" style="width:100%" />
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="document.getElementById('modal-mov').style.display='none'">Cancelar</button>
+      <button class="btn-confirm" id="modal-mov-btn" onclick="confirmarMov()">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-delete" style="display:none" onclick="fecharModalDelete(event)">
+  <div class="modal-box">
+    <h2>✕ Remover Item</h2>
+    <p>Tem certeza que deseja remover:</p>
+    <span class="nome-item" id="delete-nome-item"></span>
+    <p style="font-size:12px;color:var(--subtle)">Esta ação não pode ser desfeita.</p>
+    <div class="modal-actions" style="margin-top:20px">
+      <button class="btn-secondary" onclick="document.getElementById('modal-delete').style.display='none'">Cancelar</button>
+      <button class="btn-confirm" style="background:var(--red)" onclick="confirmarDelete()">Remover</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // ESTADO DA APLICAÇÃO
+  // ─────────────────────────────────────────────
+  let items = [
+    { id: 1, nome: "Parafusos M6",      minimo: 100, atual: 45, ideal: 500 },
+    { id: 2, nome: "Caixas de Papelão", minimo: 20,  atual: 80, ideal: 200 },
+    { id: 3, nome: "Fita Adesiva",      minimo: 5,   atual: 5,  ideal: 30  },
+    { id: 4, nome: "Papel A4 (Resma)",  minimo: 10,  atual: 3,  ideal: 50  },
+  ];
+  let nextId     = 5;
+  let editandoId = null;   
+  let movId      = null;   
+  let movTipo    = null;   
+  let deleteId   = null;   
+  let filtro     = 'todos';
+  let historico  = [];
+
+  // ─────────────────────────────────────────────
+  // LÓGICA DE CÁLCULO
+  // ─────────────────────────────────────────────
+  function calcularItem(item) {
+    const quantidadeComprar = Math.max(0, item.ideal - item.atual);
+    const precisaReposicao  = item.atual <= item.minimo;
+    const percentual        = item.ideal > 0
+      ? Math.min(100, Math.round((item.atual / item.ideal) * 100))
+      : 0;
+    return { ...item, quantidadeComprar, precisaReposicao, percentual };
+  }
+
+  // ─────────────────────────────────────────────
+  // RENDERIZAÇÃO
+  // ─────────────────────────────────────────────
+  function render() {
+    const calculados = items.map(calcularItem);
+
+    // KPIs
+    const totalAlerta  = calculados.filter(i => i.precisaReposicao).length;
+    const totalComprar = calculados.reduce((s, i) => s + i.quantidadeComprar, 0);
+    document.getElementById('kpi-total-val').textContent   = calculados.length;
+    document.getElementById('kpi-alerta-val').textContent  = totalAlerta;
+    document.getElementById('kpi-comprar-val').textContent = totalComprar;
+    document.getElementById('kpi-alerta').classList.toggle('alerta', totalAlerta > 0);
+
+    // Botão de filtro de alerta com contagem
+    document.getElementById('btn-filtro-alerta').textContent = `⚠ Reposição (${totalAlerta})`;
+
+    // Tabela
+    const filtrados = filtro === 'alerta'
+      ? calculados.filter(i => i.precisaReposicao)
+      : calculados;
+
+    const tbody = document.getElementById('tabela-body');
+
+    if (filtrados.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="empty-state">Nenhum item encontrado.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtrados.map(item => {
+      // Cor da barra de progresso
+      const corBarra = item.precisaReposicao ? '#ef4444'
+        : item.percentual < 50 ? '#f59e0b' : '#22c55e';
+
+      return `
+        <tr class="${item.precisaReposicao ? 'alerta-row' : ''}">
+          <td class="cell-nome">
+            ${item.precisaReposicao ? '<span class="dot">●</span>' : ''}
+            ${esc(item.nome)}
+          </td>
+          <td class="cell-mono">${item.minimo}</td>
+          <td>
+            <span class="cell-atual ${item.precisaReposicao ? 'alerta' : ''}">${item.atual}</span>
+            <div class="progress-wrap">
+              <div class="progress-bar"
+                   style="width:${item.percentual}%;background:${corBarra};box-shadow:0 0 8px ${corBarra}88"></div>
+            </div>
+          </td>
+          <td class="cell-mono">${item.ideal}</td>
+
+          <td class="cell-comprar ${item.quantidadeComprar > 0 ? 'need' : 'ok'}">${item.quantidadeComprar}</td>
+
+          <td>
+            <span class="badge ${item.precisaReposicao ? 'repor' : 'ok'}">
+              ${item.precisaReposicao ? '⚠ Repor' : '✓ OK'}
+            </span>
+          </td>
+          <td>
+            <div class="action-wrap">
+              <button class="action-btn entrada" title="Entrada"
+                      onclick="abrirMov(${item.id},'entrada')">▲</button>
+              <button class="action-btn saida" title="Saída"
+                      onclick="abrirMov(${item.id},'saida')">▼</button>
+              <button class="action-btn edit" title="Editar"
+                      onclick="abrirFormEditar(${item.id})">✏</button>
+              <button class="action-btn del" title="Remover"
+                      onclick="pedirDelete(${item.id})">✕</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ─────────────────────────────────────────────
+  // FILTRO
+  // ─────────────────────────────────────────────
+  function setFiltro(f) {
+    filtro = f;
+    document.getElementById('btn-filtro-todos').className  = 'filtro-btn' + (f === 'todos'  ? ' ativo-todos'  : '');
+    document.getElementById('btn-filtro-alerta').className = 'filtro-btn' + (f === 'alerta' ? ' ativo-alerta' : '');
+    render();
+  }
+
+  // ─────────────────────────────────────────────
+  // FORMULÁRIO
+  // ─────────────────────────────────────────────
+  function abrirFormNovo() {
+    editandoId = null;
+    document.getElementById('form-title').textContent = '+ Novo Material';
+    document.getElementById('f-nome').value   = '';
+    document.getElementById('f-minimo').value = '';
+    document.getElementById('f-atual').value  = '';
+    document.getElementById('f-ideal').value  = '';
+    document.getElementById('preview-comprar').textContent = '0';
+    document.getElementById('form-panel').classList.add('visible');
+    
+    // Pequeno delay para focar suavemente (bom para mobile)
+    setTimeout(() => document.getElementById('f-nome').focus(), 100);
+  }
+
+  function abrirFormEditar(id) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    editandoId = id;
+    document.getElementById('form-title').textContent = '✏ Editar Material';
+    document.getElementById('f-nome').value   = item.nome;
+    document.getElementById('f-minimo').value = item.minimo;
+    document.getElementById('f-atual').value  = item.atual;
+    document.getElementById('f-ideal').value  = item.ideal;
+    atualizarPreview();
+    document.getElementById('form-panel').classList.add('visible');
+    
+    // Pequeno delay para subir tela (mobile)
+    setTimeout(() => {
+        document.getElementById('form-panel').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('f-nome').focus();
+    }, 100);
+  }
+
+  function fecharForm() {
+    document.getElementById('form-panel').classList.remove('visible');
+    editandoId = null;
+  }
+
+  function atualizarPreview() {
+    const ideal = parseInt(document.getElementById('f-ideal').value) || 0;
+    const atual = parseInt(document.getElementById('f-atual').value) || 0;
+    document.getElementById('preview-comprar').textContent = Math.max(0, ideal - atual);
+  }
+
+  function salvarItem() {
+    const nome   = document.getElementById('f-nome').value.trim();
+    const minimo = parseInt(document.getElementById('f-minimo').value, 10);
+    const atual  = parseInt(document.getElementById('f-atual').value, 10);
+    const ideal  = parseInt(document.getElementById('f-ideal').value, 10);
+
+    if (!nome)                                        return showErro('Informe o nome do material.');
+    if ([minimo, atual, ideal].some(v => isNaN(v) || v < 0)) return showErro('Preencha todos os campos com valores válidos (≥ 0).');
+    if (ideal < minimo)                               return showErro('Estoque Ideal deve ser maior ou igual ao Mínimo.');
+
+    if (editandoId !== null) {
+      items = items.map(i => i.id === editandoId ? { ...i, nome, minimo, atual, ideal } : i);
+      editandoId = null;
+    } else {
+      items.push({ id: nextId++, nome, minimo, atual, ideal });
+    }
+
+    fecharForm();
+    render();
+  }
+
+  // ─────────────────────────────────────────────
+  // EXCLUSÃO
+  // ─────────────────────────────────────────────
+  function pedirDelete(id) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    deleteId = id;
+    document.getElementById('delete-nome-item').textContent = item.nome;
+    document.getElementById('modal-delete').style.display = 'flex';
+  }
+
+  function confirmarDelete() {
+    if (deleteId === null) return;
+    items = items.filter(i => i.id !== deleteId);
+    historico = historico.filter(h => h.itemId !== deleteId);
+    deleteId = null;
+    document.getElementById('modal-delete').style.display = 'none';
+    renderHistorico();
+    render();
+  }
+
+  function fecharModalDelete(e) {
+    if (e.target === document.getElementById('modal-delete'))
+      document.getElementById('modal-delete').style.display = 'none';
+  }
+
+  // ─────────────────────────────────────────────
+  // MOVIMENTAÇÃO (ENTRADA / SAÍDA)
+  // ─────────────────────────────────────────────
+  function abrirMov(id, tipo) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    movId   = id;
+    movTipo = tipo;
+    const isEntrada = tipo === 'entrada';
+
+    document.getElementById('modal-mov-titulo').textContent =
+      isEntrada ? '▲ Registrar Entrada' : '▼ Registrar Saída';
+    document.getElementById('modal-mov-titulo').style.color =
+      isEntrada ? 'var(--green)' : 'var(--red)';
+    document.getElementById('modal-mov-box').style.borderTop =
+      `3px solid ${isEntrada ? 'var(--green)' : 'var(--red)'}`;
+    document.getElementById('modal-mov-info').innerHTML =
+      `${esc(item.nome)} — Atual: <strong style="color:var(--secondary)">${item.atual}</strong>`;
+    document.getElementById('modal-mov-btn').style.background =
+      isEntrada ? 'var(--green)' : 'var(--red)';
+    document.getElementById('modal-mov-qtd').value = '';
+    document.getElementById('modal-mov-obs').value = '';
+
+    document.getElementById('modal-mov').style.display = 'flex';
+    setTimeout(() => document.getElementById('modal-mov-qtd').focus(), 100);
+  }
+
+  function confirmarMov() {
+    const qtd = parseInt(document.getElementById('modal-mov-qtd').value, 10);
+    const obs = document.getElementById('modal-mov-obs').value.trim();
+    const item = items.find(i => i.id === movId);
+
+    if (!qtd || qtd <= 0)          return showErro('Informe uma quantidade válida.');
+    if (movTipo === 'saida' && qtd > item.atual)
+                                   return showErro('Saída não pode ser maior que o estoque atual.');
+
+    const delta = movTipo === 'entrada' ? qtd : -qtd;
+
+    items = items.map(i => i.id === movId ? { ...i, atual: Math.max(0, i.atual + delta) } : i);
+
+    historico.unshift({
+      itemId: movId,
+      nome: item.nome,
+      tipo: movTipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
+      qtd,
+      obs,
+      hora: new Date().toLocaleTimeString('pt-BR'),
+    });
+    historico = historico.slice(0, 20);
+
+    document.getElementById('modal-mov').style.display = 'none';
+    renderHistorico();
+    render();
+  }
+
+  function fecharModalMov(e) {
+    if (e.target === document.getElementById('modal-mov'))
+      document.getElementById('modal-mov').style.display = 'none';
+  }
+
+  // ─────────────────────────────────────────────
+  // HISTÓRICO
+  // ─────────────────────────────────────────────
+  function renderHistorico() {
+    const panel = document.getElementById('historico-panel');
+    const lista = document.getElementById('historico-lista');
+    if (historico.length === 0) { panel.classList.remove('visible'); return; }
+    panel.classList.add('visible');
+    lista.innerHTML = historico.map(h => `
+      <div class="hist-item">
+        <span class="hist-badge ${h.tipo === 'ENTRADA' ? 'entrada' : 'saida'}">
+          ${h.tipo === 'ENTRADA' ? '▲' : '▼'} ${h.tipo}
+        </span>
+        <span class="hist-nome">${esc(h.nome)}</span>
+        <span class="hist-qtd">${h.tipo === 'ENTRADA' ? '+' : '-'}${h.qtd} un.</span>
+        ${h.obs ? `<span class="hist-obs">${esc(h.obs)}</span>` : ''}
+        <span class="hist-hora">${h.hora}</span>
+      </div>
+    `).join('');
+  }
+
+  // ─────────────────────────────────────────────
+  // UTILIDADES
+  // ─────────────────────────────────────────────
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function showErro(msg) {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    Object.assign(el.style, {
+      position:'fixed', top:'20px', left:'50%', transform:'translateX(-50%)',
+      background:'#ef4444', color:'#fff', padding:'12px 24px',
+      borderRadius:'10px', fontSize:'14px', fontWeight:'600',
+      zIndex:'9999', boxShadow:'0 8px 30px rgba(0,0,0,0.15)',
+      animation:'fadein 0.2s ease',
+      width: '90%', maxWidth: '400px', textAlign: 'center'
+    });
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // ─────────────────────────────────────────────
+  // INICIALIZAÇÃO
+  // ─────────────────────────────────────────────
+  render();
+</script>
+</body>
+</html>
