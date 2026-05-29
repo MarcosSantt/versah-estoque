@@ -52,7 +52,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      flex-wrap: wrap; /* Permite que os itens quebrem linha em telas pequenas */
+      flex-wrap: wrap;
       gap: 16px;
     }
     .header-logo { display: flex; align-items: center; gap: 12px; }
@@ -74,6 +74,7 @@
       margin-top: 2px;
       padding-left: 48px;
     }
+    .header-actions { display: flex; align-items: center; gap: 12px; }
 
     /* ── Container ── */
     #app { max-width: 1100px; margin: 0 auto; padding: 32px 24px 0; }
@@ -105,7 +106,7 @@
       border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       font-size: 24px;
-      flex-shrink: 0; /* Impede que o ícone amasse no mobile */
+      flex-shrink: 0;
     }
     .kpi-value {
       font-family: var(--mono);
@@ -135,6 +136,11 @@
       font-size: 14px; font-weight: 600;
       background: var(--surface);
     }
+    .btn-logout {
+      background: transparent; border: 1px solid #E2DDD3; color: #FFFFFF;
+      padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    }
+    .btn-logout:hover { background: rgba(255, 255, 255, 0.1); }
 
     /* ── Formulário ── */
     #form-panel {
@@ -171,12 +177,12 @@
     }
     input[type=text], input[type=number] {
       width: 100%;
-      padding: 12px 14px; /* Aumentado um pouco para facilitar toque */
+      padding: 12px 14px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 10px;
       color: var(--primary);
-      font-size: 16px; /* 16px OBRIGATÓRIO PARA EVITAR ZOOM AUTOMÁTICO NO IPHONE */
+      font-size: 16px;
       font-family: var(--sans);
       transition: border-color 0.15s, box-shadow 0.15s;
     }
@@ -207,7 +213,7 @@
       gap: 8px;
       margin-bottom: 16px;
       align-items: center;
-      flex-wrap: wrap; /* Evita quebra ruim no celular */
+      flex-wrap: wrap;
     }
     #filtros span { color: var(--subtle); font-size: 13px; margin-right: 4px; }
     .filtro-btn {
@@ -235,9 +241,9 @@
     }
     .table-scroll { 
       overflow-x: auto; 
-      -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+      -webkit-overflow-scrolling: touch;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; /* Garante estrutura em telas pequenas */ }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 600px; }
     thead tr { background: var(--bg); }
     th {
       padding: 14px 16px;
@@ -253,17 +259,10 @@
     }
     th.center { text-align: center; }
     td { padding: 14px 16px; vertical-align: middle; border-bottom: 1px solid var(--border); }
-    tbody tr {
-      transition: background 0.15s;
-    }
+    tbody tr { transition: background 0.15s; }
     tbody tr:hover td { background: rgba(195, 163, 101, 0.08); }
     tbody tr.alerta-row { background: #ef444408; }
-    .table-footer {
-      padding: 12px 16px;
-      background: var(--surface);
-      font-size: 11px;
-      color: var(--subtle);
-    }
+    .table-footer { padding: 12px 16px; background: var(--surface); font-size: 11px; color: var(--subtle); }
 
     /* ── Células especiais ── */
     .cell-nome { font-weight: 600; color: var(--bright); white-space: nowrap; }
@@ -292,7 +291,7 @@
     /* ── Action buttons ── */
     .action-wrap { display: flex; gap: 8px; justify-content: center; }
     .action-btn {
-      width: 36px; height: 36px; /* Aumentado para melhor toque no celular */
+      width: 36px; height: 36px;
       border-radius: 8px;
       font-size: 14px; font-weight: 700;
       border: 1px solid;
@@ -316,7 +315,7 @@
       display: flex; align-items: center; justify-content: center;
       z-index: 500;
       backdrop-filter: blur(2px);
-      padding: 16px; /* Impede que modal encoste na borda em telas curtas */
+      padding: 16px;
     }
     .modal-box {
       background: var(--surface);
@@ -324,7 +323,7 @@
       border-radius: 16px;
       padding: 28px;
       width: 100%;
-      max-width: 380px; /* Flexível para celular */
+      max-width: 380px;
       box-shadow: 0 25px 60px rgba(0,0,0,0.15);
     }
     .modal-box h2 { font-family: var(--mono); font-size: 20px; margin-bottom: 4px; color: var(--bright); }
@@ -334,56 +333,34 @@
     .modal-actions .btn-confirm { border: none; color: #fff; font-weight: 600; font-size: 14px; border-radius: 10px; }
 
     /* ── Modal de confirmação de exclusão ── */
-    #modal-delete .modal-box {
-      border-top: 3px solid var(--red);
-    }
+    #modal-delete .modal-box { border-top: 3px solid var(--red); }
     #modal-delete h2 { color: var(--red); }
     #modal-delete p { margin-bottom: 8px; }
     #modal-delete .nome-item {
-      display: block;
-      font-weight: 600;
-      color: var(--bright);
-      font-family: var(--mono);
-      font-size: 15px;
-      margin-bottom: 20px;
-      padding: 10px 14px;
-      background: var(--bg);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      word-break: break-all;
+      display: block; font-weight: 600; color: var(--bright);
+      font-family: var(--mono); font-size: 15px; margin-bottom: 20px;
+      padding: 10px 14px; background: var(--bg); border-radius: 8px;
+      border: 1px solid var(--border); word-break: break-all;
     }
 
     /* ── Histórico ── */
     #historico-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      display: none;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; display: none;
       box-shadow: 0 4px 15px rgba(0,0,0,0.02);
     }
     #historico-panel.visible { display: block; }
     #historico-panel h3 {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--dim);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
+      font-family: var(--mono); font-size: 12px; color: var(--dim);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px;
     }
     .hist-item {
-      display: flex; align-items: center; gap: 12px;
-      font-size: 13px; padding: 10px 12px;
-      background: var(--bg);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      margin-bottom: 8px;
-      flex-wrap: wrap; /* Permite que infos de histórico quebrem linha */
+      display: flex; align-items: center; gap: 12px; font-size: 13px; padding: 10px 12px;
+      background: var(--bg); border-radius: 8px; border: 1px solid var(--border);
+      margin-bottom: 8px; flex-wrap: wrap;
     }
     .hist-badge {
-      font-family: var(--mono); font-size: 11px;
-      padding: 2px 8px; border-radius: 99px; font-weight: 700;
-      white-space: nowrap;
+      font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 700; white-space: nowrap;
     }
     .hist-badge.entrada { background: #dcfce7; color: var(--green); }
     .hist-badge.saida   { background: #fee2e2; color: var(--red); }
@@ -392,40 +369,21 @@
     .hist-obs   { color: var(--subtle); font-size: 12px; width: 100%; margin-top: 4px; display: block; }
     .hist-hora  { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto; }
 
-    /* ── Vazio ── */
-    .empty-state {
-      padding: 40px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .empty-state { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
 
-    /* ─────────────────────────────────────────────
-       MEDIA QUERIES (RESPONSIVIDADE)
-       ───────────────────────────────────────────── */
-    
-    /* Telas Médias (Tablets) */
-    @media (max-width: 900px) {
-      #kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* Telas Pequenas (Celulares) */
+    @media (max-width: 900px) { #kpi-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 600px) {
       #header { padding: 16px 20px; flex-direction: column; align-items: flex-start; }
       .header-sub { padding-left: 0; margin-top: 8px; }
-      .btn-primary { width: 100%; margin-top: 8px; }
-      
+      .header-actions { width: 100%; justify-content: space-between; }
+      .btn-primary { width: auto; margin-top: 0; }
       #app { padding: 20px 16px 0; }
       #kpi-grid { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; } /* Inputs empilhados no mobile */
-      
-      .form-actions { flex-direction: column-reverse; } /* Botão primário fica por cima no celular */
+      .form-grid { grid-template-columns: 1fr; }
+      .form-actions { flex-direction: column-reverse; }
       .form-actions button { width: 100%; }
-
       .modal-actions { flex-direction: column-reverse; gap: 8px; }
       .modal-actions button { width: 100%; }
-      
-      /* O histórico precisa se adaptar caso as observações sejam longas */
       .hist-item { flex-direction: column; align-items: flex-start; gap: 8px; }
       .hist-hora { margin-left: 0; }
     }
@@ -447,11 +405,13 @@
     </div>
     <p class="header-sub">Sistema de Controle de Entradas e Saídas</p>
   </div>
-  <button class="btn-primary" onclick="abrirFormNovo()">+ Novo Material</button>
+  <div class="header-actions">
+    <button class="btn-logout" id="btn-logout">Sair</button>
+    <button class="btn-primary" id="btn-novo-material">+ Novo Material</button>
+  </div>
 </div>
 
 <div id="app">
-
   <div id="kpi-grid">
     <div class="kpi-card" id="kpi-total">
       <div class="kpi-icon" style="background:rgba(195, 163, 101, 0.15); color: var(--accent);">📋</div>
@@ -485,15 +445,15 @@
       </div>
       <div>
         <label>Qtd. Mínima (segurança) *</label>
-        <input type="number" id="f-minimo" min="0" placeholder="Ex: 50" oninput="atualizarPreview()" />
+        <input type="number" id="f-minimo" min="0" placeholder="Ex: 50" />
       </div>
       <div>
         <label>Estoque Atual *</label>
-        <input type="number" id="f-atual" min="0" placeholder="Ex: 120" oninput="atualizarPreview()" />
+        <input type="number" id="f-atual" min="0" placeholder="Ex: 120" />
       </div>
       <div>
         <label>Estoque Ideal (meta) *</label>
-        <input type="number" id="f-ideal" min="0" placeholder="Ex: 500" oninput="atualizarPreview()" />
+        <input type="number" id="f-ideal" min="0" placeholder="Ex: 500" />
       </div>
       <div class="full">
         <div class="calc-preview">
@@ -503,15 +463,15 @@
       </div>
     </div>
     <div class="form-actions">
-      <button class="btn-secondary" onclick="fecharForm()">Cancelar</button>
-      <button class="btn-primary" onclick="salvarItem()">Salvar</button>
+      <button class="btn-secondary" id="btn-cancelar-form">Cancelar</button>
+      <button class="btn-primary" id="btn-salvar-form">Salvar</button>
     </div>
   </div>
 
   <div id="filtros">
     <span>Filtrar:</span>
-    <button class="filtro-btn ativo-todos" id="btn-filtro-todos" onclick="setFiltro('todos')">Todos</button>
-    <button class="filtro-btn" id="btn-filtro-alerta" onclick="setFiltro('alerta')">⚠ Reposição</button>
+    <button class="filtro-btn ativo-todos" id="btn-filtro-todos">Todos</button>
+    <button class="filtro-btn" id="btn-filtro-alerta">⚠ Reposição (0)</button>
   </div>
 
   <div id="table-wrap">
@@ -529,7 +489,7 @@
           </tr>
         </thead>
         <tbody id="tabela-body">
-          <tr><td colspan="7" class="empty-state">Nenhum item cadastrado.</td></tr>
+          <tr><td colspan="7" class="empty-state">Carregando dados...</td></tr>
         </tbody>
       </table>
     </div>
@@ -542,47 +502,44 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-mov" style="display:none" onclick="fecharModalMov(event)">
+<div class="modal-overlay" id="modal-mov" style="display:none">
   <div class="modal-box" id="modal-mov-box">
     <h2 id="modal-mov-titulo"></h2>
     <p id="modal-mov-info"></p>
     <label>Quantidade</label>
-    <input type="number" id="modal-mov-qtd" min="1" placeholder="Ex: 50"
-           style="width:100%;margin-bottom:16px"
-           onkeydown="if(event.key==='Enter') confirmarMov()" />
+    <input type="number" id="modal-mov-qtd" min="1" placeholder="Ex: 50" style="width:100%;margin-bottom:16px" />
     <label>Observação (opcional)</label>
     <input type="text" id="modal-mov-obs" placeholder="Ex: Compra NF-001" style="width:100%" />
     <div class="modal-actions">
-      <button class="btn-secondary" onclick="document.getElementById('modal-mov').style.display='none'">Cancelar</button>
-      <button class="btn-confirm" id="modal-mov-btn" onclick="confirmarMov()">Confirmar</button>
+      <button class="btn-secondary" id="btn-fechar-mov">Cancelar</button>
+      <button class="btn-confirm" id="modal-mov-btn">Confirmar</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-delete" style="display:none" onclick="fecharModalDelete(event)">
+<div class="modal-overlay" id="modal-delete" style="display:none">
   <div class="modal-box">
     <h2>✕ Remover Item</h2>
     <p>Tem certeza que deseja remover:</p>
     <span class="nome-item" id="delete-nome-item"></span>
     <p style="font-size:12px;color:var(--subtle)">Esta ação não pode ser desfeita.</p>
     <div class="modal-actions" style="margin-top:20px">
-      <button class="btn-secondary" onclick="document.getElementById('modal-delete').style.display='none'">Cancelar</button>
-      <button class="btn-confirm" style="background:var(--red)" onclick="confirmarDelete()">Remover</button>
+      <button class="btn-secondary" id="btn-fechar-delete">Cancelar</button>
+      <button class="btn-confirm" style="background:var(--red)" id="btn-confirmar-delete">Remover</button>
     </div>
   </div>
 </div>
 
-<script>
-  // ─────────────────────────────────────────────
-  // ESTADO DA APLICAÇÃO
-  // ─────────────────────────────────────────────
-  let items = [
-    { id: 1, nome: "Parafusos M6",      minimo: 100, atual: 45, ideal: 500 },
-    { id: 2, nome: "Caixas de Papelão", minimo: 20,  atual: 80, ideal: 200 },
-    { id: 3, nome: "Fita Adesiva",      minimo: 5,   atual: 5,  ideal: 30  },
-    { id: 4, nome: "Papel A4 (Resma)",  minimo: 10,  atual: 3,  ideal: 50  },
-  ];
-  let nextId     = 5;
+<!-- LÓGICA DE INTEGRAÇÃO COM O FIREBASE COMO MÓDULO -->
+<script type="module">
+  import { db, auth } from './firebase-config.js';
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { 
+    collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy, limit 
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // Variáveis de Estado Globais do Módulo
+  let items = [];
   let editandoId = null;   
   let movId      = null;   
   let movTipo    = null;   
@@ -590,40 +547,62 @@
   let filtro     = 'todos';
   let historico  = [];
 
-  // ─────────────────────────────────────────────
-  // LÓGICA DE CÁLCULO
-  // ─────────────────────────────────────────────
+  // Proteção de Rota / Verificação de Login
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
+      inicializarEscutasFirebase();
+    }
+  });
+
+  // Logout
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    signOut(auth).then(() => { window.location.href = "login.html"; });
+  });
+
+  // Conexões em tempo real com o banco Firestore
+  function inicializarEscutasFirebase() {
+    // Escuta materiais
+    onSnapshot(collection(db, "materiais"), (snapshot) => {
+      items = [];
+      snapshot.forEach((doc) => {
+        items.push({ id: doc.id, ...doc.data() });
+      });
+      render();
+    });
+
+    // Escuta histórico limitado às últimas 30 entradas
+    const qHistorico = query(collection(db, "historico"), orderBy("timestamp", "desc"), limit(30));
+    onSnapshot(qHistorico, (snapshot) => {
+      historico = [];
+      snapshot.forEach((doc) => {
+        historico.push({ id: doc.id, ...doc.data() });
+      });
+      renderHistorico();
+    });
+  }
+
+  // Cálculos base do sistema
   function calcularItem(item) {
     const quantidadeComprar = Math.max(0, item.ideal - item.atual);
     const precisaReposicao  = item.atual <= item.minimo;
-    const percentual        = item.ideal > 0
-      ? Math.min(100, Math.round((item.atual / item.ideal) * 100))
-      : 0;
+    const percentual        = item.ideal > 0 ? Math.min(100, Math.round((item.atual / item.ideal) * 100)) : 0;
     return { ...item, quantidadeComprar, precisaReposicao, percentual };
   }
 
-  // ─────────────────────────────────────────────
-  // RENDERIZAÇÃO
-  // ─────────────────────────────────────────────
   function render() {
     const calculados = items.map(calcularItem);
-
-    // KPIs
     const totalAlerta  = calculados.filter(i => i.precisaReposicao).length;
     const totalComprar = calculados.reduce((s, i) => s + i.quantidadeComprar, 0);
+
     document.getElementById('kpi-total-val').textContent   = calculados.length;
     document.getElementById('kpi-alerta-val').textContent  = totalAlerta;
     document.getElementById('kpi-comprar-val').textContent = totalComprar;
     document.getElementById('kpi-alerta').classList.toggle('alerta', totalAlerta > 0);
-
-    // Botão de filtro de alerta com contagem
     document.getElementById('btn-filtro-alerta').textContent = `⚠ Reposição (${totalAlerta})`;
 
-    // Tabela
-    const filtrados = filtro === 'alerta'
-      ? calculados.filter(i => i.precisaReposicao)
-      : calculados;
-
+    const filtrados = filtro === 'alerta' ? calculados.filter(i => i.precisaReposicao) : calculados;
     const tbody = document.getElementById('tabela-body');
 
     if (filtrados.length === 0) {
@@ -632,10 +611,7 @@
     }
 
     tbody.innerHTML = filtrados.map(item => {
-      // Cor da barra de progresso
-      const corBarra = item.precisaReposicao ? '#ef4444'
-        : item.percentual < 50 ? '#f59e0b' : '#22c55e';
-
+      const corBarra = item.precisaReposicao ? '#ef4444' : item.percentual < 50 ? '#f59e0b' : '#22c55e';
       return `
         <tr class="${item.precisaReposicao ? 'alerta-row' : ''}">
           <td class="cell-nome">
@@ -646,61 +622,50 @@
           <td>
             <span class="cell-atual ${item.precisaReposicao ? 'alerta' : ''}">${item.atual}</span>
             <div class="progress-wrap">
-              <div class="progress-bar"
-                   style="width:${item.percentual}%;background:${corBarra};box-shadow:0 0 8px ${corBarra}88"></div>
+              <div class="progress-bar" style="width:${item.percentual}%;background:${corBarra};box-shadow:0 0 8px ${corBarra}88"></div>
             </div>
           </td>
           <td class="cell-mono">${item.ideal}</td>
-
           <td class="cell-comprar ${item.quantidadeComprar > 0 ? 'need' : 'ok'}">${item.quantidadeComprar}</td>
-
           <td>
-            <span class="badge ${item.precisaReposicao ? 'repor' : 'ok'}">
-              ${item.precisaReposicao ? '⚠ Repor' : '✓ OK'}
-            </span>
+            <span class="badge ${item.precisaReposicao ? 'repor' : 'ok'}">${item.precisaReposicao ? '⚠ Repor' : '✓ OK'}</span>
           </td>
           <td>
             <div class="action-wrap">
-              <button class="action-btn entrada" title="Entrada"
-                      onclick="abrirMov(${item.id},'entrada')">▲</button>
-              <button class="action-btn saida" title="Saída"
-                      onclick="abrirMov(${item.id},'saida')">▼</button>
-              <button class="action-btn edit" title="Editar"
-                      onclick="abrirFormEditar(${item.id})">✏</button>
-              <button class="action-btn del" title="Remover"
-                      onclick="pedirDelete(${item.id})">✕</button>
+              <button class="action-btn entrada" data-id="${item.id}">▲</button>
+              <button class="action-btn saida" data-id="${item.id}">▼</button>
+              <button class="action-btn edit" data-id="${item.id}">✏</button>
+              <button class="action-btn del" data-id="${item.id}">✕</button>
             </div>
           </td>
         </tr>`;
     }).join('');
+
+    // Atribuindo os eventos dinamicamente nos botões gerados
+    tbody.querySelectorAll('.action-btn.entrada').forEach(b => b.addEventListener('click', (e) => abrirMov(e.target.dataset.id, 'entrada')));
+    tbody.querySelectorAll('.action-btn.saida').forEach(b => b.addEventListener('click', (e) => abrirMov(e.target.dataset.id, 'saida')));
+    tbody.querySelectorAll('.action-btn.edit').forEach(b => b.addEventListener('click', (e) => abrirFormEditar(e.target.dataset.id)));
+    tbody.querySelectorAll('.action-btn.del').forEach(b => b.addEventListener('click', (e) => pedirDelete(e.target.dataset.id)));
   }
 
-  // ─────────────────────────────────────────────
-  // FILTRO
-  // ─────────────────────────────────────────────
+  // Filtros de visualização
   function setFiltro(f) {
     filtro = f;
     document.getElementById('btn-filtro-todos').className  = 'filtro-btn' + (f === 'todos'  ? ' ativo-todos'  : '');
     document.getElementById('btn-filtro-alerta').className = 'filtro-btn' + (f === 'alerta' ? ' ativo-alerta' : '');
     render();
   }
+  document.getElementById('btn-filtro-todos').addEventListener('click', () => setFiltro('todos'));
+  document.getElementById('btn-filtro-alerta').addEventListener('click', () => setFiltro('alerta'));
 
-  // ─────────────────────────────────────────────
-  // FORMULÁRIO
-  // ─────────────────────────────────────────────
-  function abrirFormNovo() {
+  // Formulário Operações
+  document.getElementById('btn-novo-material').addEventListener('click', () => {
     editandoId = null;
     document.getElementById('form-title').textContent = '+ Novo Material';
-    document.getElementById('f-nome').value   = '';
-    document.getElementById('f-minimo').value = '';
-    document.getElementById('f-atual').value  = '';
-    document.getElementById('f-ideal').value  = '';
-    document.getElementById('preview-comprar').textContent = '0';
+    limparFormCampos();
     document.getElementById('form-panel').classList.add('visible');
-    
-    // Pequeno delay para focar suavemente (bom para mobile)
     setTimeout(() => document.getElementById('f-nome').focus(), 100);
-  }
+  });
 
   function abrirFormEditar(id) {
     const item = items.find(i => i.id === id);
@@ -713,8 +678,6 @@
     document.getElementById('f-ideal').value  = item.ideal;
     atualizarPreview();
     document.getElementById('form-panel').classList.add('visible');
-    
-    // Pequeno delay para subir tela (mobile)
     setTimeout(() => {
         document.getElementById('form-panel').scrollIntoView({ behavior: 'smooth' });
         document.getElementById('f-nome').focus();
@@ -725,37 +688,42 @@
     document.getElementById('form-panel').classList.remove('visible');
     editandoId = null;
   }
+  document.getElementById('btn-cancelar-form').addEventListener('click', fecharForm);
 
   function atualizarPreview() {
     const ideal = parseInt(document.getElementById('f-ideal').value) || 0;
     const atual = parseInt(document.getElementById('f-atual').value) || 0;
     document.getElementById('preview-comprar').textContent = Math.max(0, ideal - atual);
   }
+  ['f-minimo', 'f-atual', 'f-ideal'].forEach(id => document.getElementById(id).addEventListener('input', atualizarPreview));
 
-  function salvarItem() {
+  async function salvarItem() {
     const nome   = document.getElementById('f-nome').value.trim();
     const minimo = parseInt(document.getElementById('f-minimo').value, 10);
     const atual  = parseInt(document.getElementById('f-atual').value, 10);
     const ideal  = parseInt(document.getElementById('f-ideal').value, 10);
 
-    if (!nome)                                        return showErro('Informe o nome do material.');
+    if (!nome) return showErro('Informe o nome do material.');
     if ([minimo, atual, ideal].some(v => isNaN(v) || v < 0)) return showErro('Preencha todos os campos com valores válidos (≥ 0).');
-    if (ideal < minimo)                               return showErro('Estoque Ideal deve ser maior ou igual ao Mínimo.');
+    if (ideal < minimo) return showErro('Estoque Ideal deve ser maior ou igual ao Mínimo.');
 
-    if (editandoId !== null) {
-      items = items.map(i => i.id === editandoId ? { ...i, nome, minimo, atual, ideal } : i);
-      editandoId = null;
-    } else {
-      items.push({ id: nextId++, nome, minimo, atual, ideal });
+    const dados = { nome, minimo, atual, ideal };
+
+    try {
+      if (editandoId !== null) {
+        await updateDoc(doc(db, "materiais", editandoId), dados);
+        editandoId = null;
+      } else {
+        await addDoc(collection(db, "materiais"), dados);
+      }
+      fecharForm();
+    } catch (e) {
+      showErro("Erro ao salvar no Firebase.");
     }
-
-    fecharForm();
-    render();
   }
+  document.getElementById('btn-salvar-form').addEventListener('click', salvarItem);
 
-  // ─────────────────────────────────────────────
-  // EXCLUSÃO
-  // ─────────────────────────────────────────────
+  // Exclusão Operações
   function pedirDelete(id) {
     const item = items.find(i => i.id === id);
     if (!item) return;
@@ -764,24 +732,20 @@
     document.getElementById('modal-delete').style.display = 'flex';
   }
 
-  function confirmarDelete() {
+  async function confirmarDelete() {
     if (deleteId === null) return;
-    items = items.filter(i => i.id !== deleteId);
-    historico = historico.filter(h => h.itemId !== deleteId);
-    deleteId = null;
-    document.getElementById('modal-delete').style.display = 'none';
-    renderHistorico();
-    render();
-  }
-
-  function fecharModalDelete(e) {
-    if (e.target === document.getElementById('modal-delete'))
+    try {
+      await deleteDoc(doc(db, "materiais", deleteId));
       document.getElementById('modal-delete').style.display = 'none';
+      deleteId = null;
+    } catch(e) {
+      showErro("Erro ao deletar.");
+    }
   }
+  document.getElementById('btn-confirmar-delete').addEventListener('click', confirmarDelete);
+  document.getElementById('btn-fechar-delete').addEventListener('click', () => document.getElementById('modal-delete').style.display = 'none');
 
-  // ─────────────────────────────────────────────
-  // MOVIMENTAÇÃO (ENTRADA / SAÍDA)
-  // ─────────────────────────────────────────────
+  // Movimentações Entrada/Saída
   function abrirMov(id, tipo) {
     const item = items.find(i => i.id === id);
     if (!item) return;
@@ -789,16 +753,11 @@
     movTipo = tipo;
     const isEntrada = tipo === 'entrada';
 
-    document.getElementById('modal-mov-titulo').textContent =
-      isEntrada ? '▲ Registrar Entrada' : '▼ Registrar Saída';
-    document.getElementById('modal-mov-titulo').style.color =
-      isEntrada ? 'var(--green)' : 'var(--red)';
-    document.getElementById('modal-mov-box').style.borderTop =
-      `3px solid ${isEntrada ? 'var(--green)' : 'var(--red)'}`;
-    document.getElementById('modal-mov-info').innerHTML =
-      `${esc(item.nome)} — Atual: <strong style="color:var(--secondary)">${item.atual}</strong>`;
-    document.getElementById('modal-mov-btn').style.background =
-      isEntrada ? 'var(--green)' : 'var(--red)';
+    document.getElementById('modal-mov-titulo').textContent = isEntrada ? '▲ Registrar Entrada' : '▼ Registrar Saída';
+    document.getElementById('modal-mov-titulo').style.color = isEntrada ? 'var(--green)' : 'var(--red)';
+    document.getElementById('modal-mov-box').style.borderTop = `3px solid ${isEntrada ? 'var(--green)' : 'var(--red)'}`;
+    document.getElementById('modal-mov-info').innerHTML = `${esc(item.nome)} — Atual: <strong style="color:var(--secondary)">${item.atual}</strong>`;
+    document.getElementById('modal-mov-btn').style.background = isEntrada ? 'var(--green)' : 'var(--red)';
     document.getElementById('modal-mov-qtd').value = '';
     document.getElementById('modal-mov-obs').value = '';
 
@@ -806,42 +765,38 @@
     setTimeout(() => document.getElementById('modal-mov-qtd').focus(), 100);
   }
 
-  function confirmarMov() {
+  async function confirmarMov() {
     const qtd = parseInt(document.getElementById('modal-mov-qtd').value, 10);
     const obs = document.getElementById('modal-mov-obs').value.trim();
     const item = items.find(i => i.id === movId);
 
-    if (!qtd || qtd <= 0)          return showErro('Informe uma quantidade válida.');
-    if (movTipo === 'saida' && qtd > item.atual)
-                                   return showErro('Saída não pode ser maior que o estoque atual.');
+    if (!qtd || qtd <= 0) return showErro('Informe uma quantidade válida.');
+    if (movTipo === 'saida' && qtd > item.atual) return showErro('Saída não pode ser maior que o estoque atual.');
 
     const delta = movTipo === 'entrada' ? qtd : -qtd;
+    const novoEstoque = Math.max(0, item.atual + delta);
 
-    items = items.map(i => i.id === movId ? { ...i, atual: Math.max(0, i.atual + delta) } : i);
-
-    historico.unshift({
-      itemId: movId,
-      nome: item.nome,
-      tipo: movTipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
-      qtd,
-      obs,
-      hora: new Date().toLocaleTimeString('pt-BR'),
-    });
-    historico = historico.slice(0, 20);
-
-    document.getElementById('modal-mov').style.display = 'none';
-    renderHistorico();
-    render();
-  }
-
-  function fecharModalMov(e) {
-    if (e.target === document.getElementById('modal-mov'))
+    try {
+      await updateDoc(doc(db, "materiais", movId), { atual: novoEstoque });
+      await addDoc(collection(db, "historico"), {
+        itemId: movId,
+        nome: item.nome,
+        tipo: movTipo === 'entrada' ? 'ENTRADA' : 'SAÍDA',
+        qtd,
+        obs,
+        hora: new Date().toLocaleTimeString('pt-BR'),
+        timestamp: Date.now()
+      });
       document.getElementById('modal-mov').style.display = 'none';
+    } catch(e) {
+      showErro("Erro ao registrar movimentação.");
+    }
   }
+  document.getElementById('modal-mov-btn').addEventListener('click', confirmarMov);
+  document.getElementById('btn-fechar-mov').addEventListener('click', () => document.getElementById('modal-mov').style.display = 'none');
+  document.getElementById('modal-mov-qtd').addEventListener('keydown', (e) => { if(e.key==='Enter') confirmarMov(); });
 
-  // ─────────────────────────────────────────────
-  // HISTÓRICO
-  // ─────────────────────────────────────────────
+  // Renderizador Histórico
   function renderHistorico() {
     const panel = document.getElementById('historico-panel');
     const lista = document.getElementById('historico-lista');
@@ -860,34 +815,25 @@
     `).join('');
   }
 
-  // ─────────────────────────────────────────────
-  // UTILIDADES
-  // ─────────────────────────────────────────────
+  // Utilitários auxiliares
   function esc(str) {
-    return String(str)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function showErro(msg) { alert(msg); }
+  function limparFormCampos() {
+    document.getElementById('f-nome').value   = '';
+    document.getElementById('f-minimo').value = '';
+    document.getElementById('f-atual').value  = '';
+    document.getElementById('f-ideal').value  = '';
+    document.getElementById('preview-comprar').textContent = '0';
   }
 
-  function showErro(msg) {
-    const el = document.createElement('div');
-    el.textContent = msg;
-    Object.assign(el.style, {
-      position:'fixed', top:'20px', left:'50%', transform:'translateX(-50%)',
-      background:'#ef4444', color:'#fff', padding:'12px 24px',
-      borderRadius:'10px', fontSize:'14px', fontWeight:'600',
-      zIndex:'9999', boxShadow:'0 8px 30px rgba(0,0,0,0.15)',
-      animation:'fadein 0.2s ease',
-      width: '90%', maxWidth: '400px', textAlign: 'center'
-    });
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 3000);
-  }
-
-  // ─────────────────────────────────────────────
-  // INICIALIZAÇÃO
-  // ─────────────────────────────────────────────
-  render();
+  // Fechar Modais clicando fora
+  window.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modal-mov')) document.getElementById('modal-mov').style.display = 'none';
+    if (e.target === document.getElementById('modal-delete')) document.getElementById('modal-delete').style.display = 'none';
+  });
 </script>
+
 </body>
 </html>
