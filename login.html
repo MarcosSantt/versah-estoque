@@ -367,7 +367,6 @@
 
 <div class="auth-wrapper">
 
-  <!-- Logo -->
   <div class="auth-header">
     <div class="auth-logo">
       <svg width="40" height="40" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -379,22 +378,17 @@
     <div class="auth-sub">Gestão de materiais e insumos</div>
   </div>
 
-  <!-- Card principal -->
   <div class="auth-card">
 
-    <!-- Alerta global -->
     <div class="alerta" id="alerta"></div>
 
-    <!-- ───── PAINEL NORMAL (login / cadastro) ───── -->
     <div id="painel-auth">
 
-      <!-- Tabs -->
       <div class="tab-bar">
         <button class="tab-btn ativo" id="tab-login" onclick="mostrarAba('login')">Entrar</button>
         <button class="tab-btn" id="tab-cadastro" onclick="mostrarAba('cadastro')">Criar conta</button>
       </div>
 
-      <!-- ─── FORMULÁRIO LOGIN ─── -->
       <div id="form-login">
         <div class="form-group">
           <label>E-mail</label>
@@ -428,7 +422,6 @@
         </button>
       </div>
 
-      <!-- ─── FORMULÁRIO CADASTRO ─── -->
       <div id="form-cadastro" style="display:none">
         <div class="form-group">
           <label>Nome completo</label>
@@ -449,7 +442,6 @@
                    oninput="verificarForca(this.value)" />
             <button class="toggle-senha" type="button" onclick="toggleSenha('cad-senha', this)" title="Mostrar/ocultar senha">👁</button>
           </div>
-          <!-- Barra de força da senha -->
           <div class="senha-forca" id="forca-wrap">
             <div class="forca-bar">
               <div class="forca-seg" id="f1"></div>
@@ -489,10 +481,7 @@
         </button>
       </div>
 
-    </div><!-- /painel-auth -->
-
-    <!-- ───── PAINEL RECUPERAÇÃO DE SENHA ───── -->
-    <div class="recovery-panel" id="painel-recuperacao">
+    </div><div class="recovery-panel" id="painel-recuperacao">
       <button class="recovery-back" onclick="mostrarAuth()">← Voltar</button>
       <div class="recovery-title">Recuperar senha</div>
       <p class="recovery-desc">
@@ -511,46 +500,58 @@
       </button>
     </div>
 
-  </div><!-- /auth-card -->
-
-  <div class="auth-footer">
+  </div><div class="auth-footer">
     Versah EstoqueControl &nbsp;·&nbsp; Dados salvos com segurança
   </div>
 
-</div><!-- /auth-wrapper -->
+</div><div class="toast" id="toast"></div>
 
-<div class="toast" id="toast"></div>
 
-<!-- ══════════════════════════════════════════════
-     FIREBASE SDK — substitua pela sua config!
-     ══════════════════════════════════════════════ -->
 <script type="module">
-  // ─── IMPORTE SEU firebase-config.js quando tiver o Firebase configurado ───
-  // import { auth, db } from './firebase-config.js';
-  // import { signInWithEmailAndPassword, createUserWithEmailAndPassword,
-  //          sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,
-  //          updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { auth } from './firebase-config.js';
+  import { 
+    signInWithEmailAndPassword, 
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail, 
+    GoogleAuthProvider, 
+    signInWithPopup,
+    updateProfile 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  // ────────────────────────────────────────────────
-  // MODO DEMO — sem Firebase
-  // Quando integrar o Firebase, remova este bloco
-  // e descomente as funções reais abaixo
-  // ────────────────────────────────────────────────
-  window._modoDemo = true;
-
+  // Vincula as funções reais do Firebase ao escopo global (window) para os cliques dos botões HTML
+  
   window.entrar = async function() {
+    limparAlerta();
     const email = document.getElementById('login-email').value.trim();
-    const senha  = document.getElementById('login-senha').value;
+    const senha = document.getElementById('login-senha').value;
+    
     if (!email || !senha) return showAlerta('Preencha e-mail e senha.', 'erro');
-    setLoading('btn-entrar', true);
-    await delay(1200);
-    setLoading('btn-entrar', false);
-    // Com Firebase real: signInWithEmailAndPassword(auth, email, senha)
-    showAlerta('✓ Login realizado! Redirecionando...', 'ok');
-    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+    
+    try {
+      setLoading('btn-entrar', true);
+      
+      // Efetua login real no Firebase
+      await signInWithEmailAndPassword(auth, email, senha);
+      
+      showAlerta('✓ Login realizado! Redirecionando...', 'ok');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+    } catch (error) {
+      console.error("Erro no login:", error.code);
+      // Tratamento amigável de erros comuns
+      if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+        showAlerta('E-mail ou senha incorretos.', 'erro');
+      } else if (error.code === 'auth/invalid-email') {
+        showAlerta('Formato de e-mail inválido.', 'erro');
+      } else {
+        showAlerta('Erro ao autenticar. Tente novamente.', 'erro');
+      }
+    } finally {
+      setLoading('btn-entrar', false);
+    }
   };
 
   window.cadastrar = async function() {
+    limparAlerta();
     const nome     = document.getElementById('cad-nome').value.trim();
     const email    = document.getElementById('cad-email').value.trim();
     const senha    = document.getElementById('cad-senha').value;
@@ -561,39 +562,77 @@
     if (senha.length < 8)    return showAlerta('A senha precisa ter ao menos 8 caracteres.', 'erro');
     if (senha !== confirma)  return showAlerta('As senhas não coincidem.', 'erro');
 
-    setLoading('btn-cadastrar', true);
-    await delay(1400);
-    setLoading('btn-cadastrar', false);
-    // Com Firebase real: createUserWithEmailAndPassword(auth, email, senha)
-    //                    depois: updateProfile(user, { displayName: nome })
-    showAlerta('✓ Conta criada! Redirecionando...', 'ok');
-    setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+    try {
+      setLoading('btn-cadastrar', true);
+      
+      // Cria a conta real no Firebase
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      
+      // Atualiza o nome do usuário no perfil dele
+      await updateProfile(userCredential.user, { displayName: nome });
+      
+      showAlerta('✓ Conta criada com sucesso! Redirecionando...', 'ok');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1200);
+    } catch (error) {
+      console.error("Erro no cadastro:", error.code);
+      if (error.code === 'auth/email-already-in-use') {
+        showAlerta('Este e-mail já está cadastrado no sistema.', 'erro');
+      } else if (error.code === 'auth/invalid-email') {
+        showAlerta('Formato de e-mail inválido.', 'erro');
+      } else {
+        showAlerta('Erro ao criar conta: ' + error.message, 'erro');
+      }
+    } finally {
+      setLoading('btn-cadastrar', false);
+    }
   };
 
   window.entrarGoogle = async function() {
-    showToast('Login com Google disponível após configurar o Firebase.', 'sucesso');
-    // Com Firebase real:
-    // const provider = new GoogleAuthProvider();
-    // await signInWithPopup(auth, provider);
-    // window.location.href = 'index.html';
+    try {
+      const provider = new GoogleAuthProvider();
+      // Força a exibição da tela de seleção de conta do Google
+      provider.setCustomParameters({ prompt: 'select_account' });
+      
+      await signInWithPopup(auth, provider);
+      
+      showToast('✓ Autenticado com o Google!', 'sucesso');
+      setTimeout(() => { window.location.href = 'index.html'; }, 800);
+    } catch (error) {
+      console.error("Erro no Google Login:", error.message);
+      if (error.code !== 'auth/popup-closed-by-user') {
+        showAlerta('Erro ao conectar com a conta Google.', 'erro');
+      }
+    }
   };
 
   window.enviarRecuperacao = async function() {
+    limparAlerta();
     const email = document.getElementById('rec-email').value.trim();
     if (!email) return showAlerta('Informe seu e-mail.', 'erro');
-    setLoading('btn-recuperar', true);
-    await delay(1200);
-    setLoading('btn-recuperar', false);
-    // Com Firebase real: sendPasswordResetEmail(auth, email)
-    showAlerta('✓ Link enviado! Verifique seu e-mail.', 'ok');
+    
+    try {
+      setLoading('btn-recuperar', true);
+      
+      // Envia e-mail real de redefinição de senha
+      await sendPasswordResetEmail(auth, email);
+      
+      showAlerta('✓ Link enviado! Verifique sua caixa de entrada.', 'ok');
+    } catch (error) {
+      console.error("Erro na recuperação:", error.message);
+      if (error.code === 'auth/user-not-found') {
+        showAlerta('Este e-mail não está cadastrado no sistema.', 'erro');
+      } else {
+        showAlerta('Erro ao enviar link de redefinição.', 'erro');
+      }
+    } finally {
+      setLoading('btn-recuperar', false);
+    }
   };
-
-  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 </script>
 
 <script>
   // ─────────────────────────────────────────────
-  // CONTROLE DE ABAS
+  // CONTROLE DE ABAS E INTERFACE (UI)
   // ─────────────────────────────────────────────
   function mostrarAba(aba) {
     limparAlerta();
@@ -616,9 +655,6 @@
     document.getElementById('painel-auth').style.display = 'block';
   }
 
-  // ─────────────────────────────────────────────
-  // SHOW / HIDE SENHA
-  // ─────────────────────────────────────────────
   function toggleSenha(inputId, btn) {
     const input = document.getElementById(inputId);
     const mostrar = input.type === 'password';
@@ -626,9 +662,6 @@
     btn.textContent = mostrar ? '🙈' : '👁';
   }
 
-  // ─────────────────────────────────────────────
-  // FORÇA DA SENHA
-  // ─────────────────────────────────────────────
   function verificarForca(senha) {
     const wrap = document.getElementById('forca-wrap');
     const checklist = document.getElementById('checklist');
@@ -646,12 +679,10 @@
     const temNum    = /[0-9]/.test(senha);
     const temEspec  = /[^A-Za-z0-9]/.test(senha);
 
-    // Checklist
     setCheck('chk-len',   temLen);
     setCheck('chk-upper', temUpper);
     setCheck('chk-num',   temNum);
 
-    // Score
     const score = [temLen, temUpper, temNum, temEspec].filter(Boolean).length;
     const cores  = ['#ef4444','#f59e0b','#C3A365','#22c55e'];
     const labels = ['Fraca','Razoável','Boa','Forte'];
@@ -669,23 +700,20 @@
     el.querySelector('.c').textContent = ok ? '✓' : '○';
   }
 
-  // ─────────────────────────────────────────────
-  // LOADING STATE
-  // ─────────────────────────────────────────────
   function setLoading(btnId, state) {
     const btn = document.getElementById(btnId);
-    btn.disabled = state;
-    btn.classList.toggle('loading', state);
+    if(btn) {
+      btn.disabled = state;
+      btn.classList.toggle('loading', state);
+    }
   }
 
-  // ─────────────────────────────────────────────
-  // ALERTAS E TOAST
-  // ─────────────────────────────────────────────
   function showAlerta(msg, tipo) {
     const el = document.getElementById('alerta');
     el.textContent = msg;
     el.className = `alerta ${tipo} show`;
   }
+  
   function limparAlerta() {
     document.getElementById('alerta').className = 'alerta';
   }
@@ -700,4 +728,4 @@
   }
 </script>
 </body>
-</html>
+</html> 
