@@ -534,7 +534,7 @@
       await signInWithEmailAndPassword(auth, email, senha);
       
       showAlerta('✓ Login realizado! Redirecionando...', 'ok');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+      setTimeout(() => { window.location.href = 'login.html'; }, 10);
     } catch (error) {
       console.error("Erro no login:", error.code);
       // Tratamento amigável de erros comuns
