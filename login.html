@@ -583,7 +583,7 @@
 <script type="module">
   import { auth, db, criarDocumento } from './firebase-config.js';
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   let usuarioId = null;
 
@@ -632,6 +632,7 @@
   async function carregarDadosFirestore() {
     if (!usuarioId) return;
     try {
+      // Carrega dados consolidados do documento raiz
       const docRef = doc(db, "estoques", usuarioId);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
@@ -640,6 +641,23 @@
         window.nextId = dados.nextId || 1;
         window.historico = dados.historico || [];
       }
+
+      // Carrega items individuais da subcoleção
+      try {
+        const itemsRef = collection(db, `estoques/${usuarioId}/items`);
+        const itemsSnapshot = await getDocs(itemsRef);
+        const items = [];
+        itemsSnapshot.forEach((doc) => {
+          items.push({ firestoreId: doc.id, ...doc.data() });
+        });
+        if (items.length > 0) {
+          window.items = items;
+          window.nextId = Math.max(...items.map(i => i.id || 0)) + 1 || 1;
+        }
+      } catch (subcollectionError) {
+        console.log("Subcoleção de items não existe ainda ou erro ao carregar:", subcollectionError);
+      }
+
       window.render();
       window.renderHistorico();
     } catch (e) {
