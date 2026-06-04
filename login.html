@@ -586,6 +586,49 @@
   import { doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   let usuarioId = null;
+  let isOnline = navigator.onLine;
+
+  // Monitora conexão de rede
+  window.addEventListener('online', () => {
+    isOnline = true;
+    console.log("✅ Voltou online!");
+    if (usuarioId) sincronizarOfflineQueue();
+  });
+
+  window.addEventListener('offline', () => {
+    isOnline = false;
+    console.log("⚠️ Conexão perdida. Modo offline ativado.");
+  });
+
+  // ─── GERENCIAR FILA DE SINCRONIZAÇÃO ─────────────────────
+  function adicionarAoQueue(acao) {
+    const queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+    queue.push({ timestamp: new Date().toISOString(), ...acao });
+    localStorage.setItem('offlineQueue', JSON.stringify(queue));
+  }
+
+  async function sincronizarOfflineQueue() {
+    if (!usuarioId) return;
+    const queue = JSON.parse(localStorage.getItem('offlineQueue') || '[]');
+    if (queue.length === 0) return;
+
+    console.log(`🔄 Sincronizando ${queue.length} ações pendentes...`);
+    for (const acao of queue) {
+      try {
+        if (acao.tipo === 'criar_item') {
+          await criarDocumento(`estoques/${usuarioId}/items`, acao.dados);
+        } else if (acao.tipo === 'atualizar_banco') {
+          const docRef = doc(db, "estoques", usuarioId);
+          await setDoc(docRef, acao.dados);
+        }
+      } catch (e) {
+        console.error("Erro ao sincronizar:", e);
+        return; // Para se houver erro
+      }
+    }
+    localStorage.removeItem('offlineQueue');
+    console.log("✅ Fila sincronizada com sucesso!");
+  }
 
   // Monitora o estado de autenticação do usuário
   onAuthStateChanged(auth, async (user) => {
@@ -616,15 +659,30 @@
   // Função para sincronizar dados com o Firestore
   async function salvarDadosFirestore() {
     if (!usuarioId) return;
+    
+    const dadosParaSalvar = {
+      items: window.items,
+      nextId: window.nextId,
+      historico: window.historico
+    };
+
+    // Sempre salva no localStorage como backup
+    localStorage.setItem(`estoque_${usuarioId}`, JSON.stringify(dadosParaSalvar));
+
+    if (!isOnline) {
+      console.log("📦 Modo offline: Dados salvos localmente. Sincronizarão quando voltar online.");
+      adicionarAoQueue({ tipo: 'atualizar_banco', dados: dadosParaSalvar });
+      return;
+    }
+
     try {
       const docRef = doc(db, "estoques", usuarioId);
-      await setDoc(docRef, {
-        items: window.items,
-        nextId: window.nextId,
-        historico: window.historico
-      });
+      await setDoc(docRef, dadosParaSalvar);
+      console.log("✅ Dados salvos no Firestore");
     } catch (e) {
       console.error("Erro ao persistir no banco de dados: ", e);
+      console.log("📦 Dados salvos localmente. Sincronizarão automaticamente.");
+      adicionarAoQueue({ tipo: 'atualizar_banco', dados: dadosParaSalvar });
     }
   }
 
@@ -632,51 +690,82 @@
   async function carregarDadosFirestore() {
     if (!usuarioId) return;
     try {
-      // Carrega dados consolidados do documento raiz
-      const docRef = doc(db, "estoques", usuarioId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const dados = docSnap.data();
+      // Tenta carregar do Firestore primeiro (se online)
+      if (isOnline) {
+        const docRef = doc(db, "estoques", usuarioId);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const dados = docSnap.data();
+          window.items = dados.items || [];
+          window.nextId = dados.nextId || 1;
+          window.historico = dados.historico || [];
+          // Salva cópia no localStorage
+          localStorage.setItem(`estoque_${usuarioId}`, JSON.stringify(dados));
+          window.render();
+          window.renderHistorico();
+          return;
+        }
+
+        // Tenta carregar items individuais da subcoleção
+        try {
+          const itemsRef = collection(db, `estoques/${usuarioId}/items`);
+          const itemsSnapshot = await getDocs(itemsRef);
+          const items = [];
+          itemsSnapshot.forEach((doc) => {
+            items.push({ firestoreId: doc.id, ...doc.data() });
+          });
+          if (items.length > 0) {
+            window.items = items;
+            window.nextId = Math.max(...items.map(i => i.id || 0)) + 1 || 1;
+          }
+        } catch (subcollectionError) {
+          console.log("Subcoleção de items não existe ainda ou erro ao carregar:", subcollectionError);
+        }
+      }
+    } catch (e) {
+      console.warn("Firestore indisponível, tentando carregar do cache local:", e);
+    }
+
+    // Fallback: Carrega do localStorage
+    try {
+      const cachedData = localStorage.getItem(`estoque_${usuarioId}`);
+      if (cachedData) {
+        const dados = JSON.parse(cachedData);
         window.items = dados.items || [];
         window.nextId = dados.nextId || 1;
         window.historico = dados.historico || [];
+        console.log("📦 Dados carregados do cache local");
       }
-
-      // Carrega items individuais da subcoleção
-      try {
-        const itemsRef = collection(db, `estoques/${usuarioId}/items`);
-        const itemsSnapshot = await getDocs(itemsRef);
-        const items = [];
-        itemsSnapshot.forEach((doc) => {
-          items.push({ firestoreId: doc.id, ...doc.data() });
-        });
-        if (items.length > 0) {
-          window.items = items;
-          window.nextId = Math.max(...items.map(i => i.id || 0)) + 1 || 1;
-        }
-      } catch (subcollectionError) {
-        console.log("Subcoleção de items não existe ainda ou erro ao carregar:", subcollectionError);
-      }
-
-      window.render();
-      window.renderHistorico();
     } catch (e) {
-      console.error("Erro ao ler do banco de dados: ", e);
+      console.error("Erro ao carregar dados em cache:", e);
     }
+
+    window.render();
+    window.renderHistorico();
   }
 
   // Função para salvar um item individual no Firebase
   async function salvarItemFirebase(item) {
     if (!usuarioId) return;
+    
+    if (!isOnline) {
+      console.log("📦 Modo offline: Item será sincronizado quando voltar online.");
+      adicionarAoQueue({ tipo: 'criar_item', dados: item });
+      return;
+    }
+
     try {
       await criarDocumento(`estoques/${usuarioId}/items`, item);
     } catch (e) {
       console.error("Erro ao salvar item no Firebase:", e);
+      console.log("📦 Item será sincronizado quando voltar online.");
+      adicionarAoQueue({ tipo: 'criar_item', dados: item });
     }
   }
 
   window.sincronizarBanco = salvarDadosFirestore;
   window.salvarItemFirebase = salvarItemFirebase;
+  window.sincronizarOfflineQueue = sincronizarOfflineQueue;
 </script>
 
 <script>
