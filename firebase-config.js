@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Suas credenciais do Firebase
 const firebaseConfig = {
@@ -15,3 +16,18 @@ const firebaseConfig = {
 // Inicializa o Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+
+// ─── CRIAR documento ─────────────────────────────────────
+export async function criarDocumento(colecao, dados) {
+  try {
+    const ref = await addDoc(collection(db, colecao), {
+      ...dados,
+      criadoEm: new Date(),
+    });
+    console.log("✅ Item criado com ID:", ref.id);
+    return ref.id;
+  } catch (e) {
+    console.error("❌ Erro ao criar item:", e);
+  }
+}

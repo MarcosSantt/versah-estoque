@@ -581,7 +581,7 @@
 </div>
 
 <script type="module">
-  import { auth, db } from './firebase-config.js';
+  import { auth, db, criarDocumento } from './firebase-config.js';
   import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
@@ -647,7 +647,18 @@
     }
   }
 
+  // Função para salvar um item individual no Firebase
+  async function salvarItemFirebase(item) {
+    if (!usuarioId) return;
+    try {
+      await criarDocumento(`estoques/${usuarioId}/items`, item);
+    } catch (e) {
+      console.error("Erro ao salvar item no Firebase:", e);
+    }
+  }
+
   window.sincronizarBanco = salvarDadosFirestore;
+  window.salvarItemFirebase = salvarItemFirebase;
 </script>
 
 <script>
@@ -810,7 +821,10 @@
       window.items = window.items.map(i => i.id === editandoId ? { ...i, nome, minimo, atual: atual, ideal } : i);
       editandoId = null;
     } else {
-      window.items.push({ id: window.nextId++, nome, minimo, atual: atual, ideal });
+      const novoItem = { id: window.nextId++, nome, minimo, atual: atual, ideal };
+      window.items.push(novoItem);
+      // Salva o novo item no Firebase
+      if (window.salvarItemFirebase) window.salvarItemFirebase(novoItem);
     }
 
     fecharForm();
