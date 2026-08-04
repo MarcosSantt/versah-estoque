@@ -33,182 +33,233 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
     }
 
-    /* ── Layout central ── */
-    .auth-wrapper {
+    /* ── Layout Moderno (Split Card) ── */
+    .auth-container {
+      display: flex;
       width: 100%;
-      max-width: 420px;
+      max-width: 960px;
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: 0 24px 48px rgba(44, 42, 38, 0.08);
+      overflow: hidden;
     }
 
-    /* ── Logo e título ── */
-    .auth-header {
-      text-align: center;
-      margin-bottom: 32px;
+    /* ── Lado da Marca (Esquerda) ── */
+    .brand-side {
+      flex: 1;
+      background: var(--primary);
+      color: var(--surface);
+      padding: 64px 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
     }
-    .auth-logo {
+
+    .brand-side::before {
+      content: '';
+      position: absolute;
+      top: -20%; left: -20%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(195,163,101,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    
+    .brand-side::after {
+      content: '';
+      position: absolute;
+      bottom: -15%; right: -15%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(106,102,88,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .brand-header {
+      position: relative;
+      z-index: 10;
+    }
+
+    .brand-logo-wrap {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 16px;
+      width: 64px;
+      height: 64px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
     }
-    .auth-title {
+
+    .brand-title {
       font-family: var(--sans);
       font-weight: 600;
-      font-size: 22px;
-      color: var(--bright);
-      letter-spacing: -0.01em;
+      font-size: 32px;
+      color: var(--surface);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
     }
-    .auth-sub {
+
+    .brand-title span {
+      color: var(--accent);
+      font-weight: 400;
+    }
+
+    .brand-sub {
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 85%;
+    }
+
+    .brand-footer {
+      position: relative;
+      z-index: 10;
       font-size: 13px;
       color: var(--subtle);
-      margin-top: 4px;
     }
 
-    /* ── Card ── */
-    .auth-card {
+    /* ── Lado do Formulário (Direita) ── */
+    .form-side {
+      width: 100%;
+      max-width: 460px;
+      padding: 56px 48px;
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 36px 32px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.04);
     }
 
-    /* ── Tabs login/cadastro ── */
+    /* ── Tabs ── */
     .tab-bar {
       display: flex;
       background: var(--bg);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 28px;
-      gap: 4px;
+      border-radius: 12px;
+      padding: 6px;
+      margin-bottom: 32px;
+      gap: 6px;
     }
     .tab-btn {
       flex: 1;
-      padding: 9px;
+      padding: 12px;
       border: none;
       background: transparent;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
-      color: var(--subtle);
+      color: var(--dim);
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-family: var(--sans);
+    }
+    .tab-btn:hover:not(.ativo) {
+      color: var(--primary);
     }
     .tab-btn.ativo {
       background: var(--surface);
       color: var(--bright);
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    /* ── Formulário ── */
-    .form-group { margin-bottom: 16px; }
+    /* ── Formulários e Inputs ── */
+    .form-group { margin-bottom: 20px; }
     .form-group label {
       display: block;
-      margin-bottom: 6px;
-      font-size: 11px;
+      margin-bottom: 8px;
+      font-size: 12px;
       color: var(--dim);
-      font-family: var(--mono);
-      letter-spacing: 0.07em;
+      font-weight: 600;
+      font-family: var(--sans);
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
     .input-wrap { position: relative; }
     .input-wrap input {
       width: 100%;
-      padding: 13px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      padding: 14px 16px;
+      background: var(--bg);
+      border: 1px solid transparent;
+      border-radius: 12px;
       color: var(--primary);
-      font-size: 16px;
+      font-size: 15px;
       font-family: var(--sans);
-      transition: border-color 0.15s, box-shadow 0.15s;
+      transition: all 0.2s ease;
     }
-    .input-wrap input::placeholder { color: var(--muted); }
+    .input-wrap input::placeholder { color: var(--subtle); }
     .input-wrap input:focus {
       outline: none;
+      background: var(--surface);
       border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(195, 163, 101, 0.18);
+      box-shadow: 0 0 0 4px rgba(195, 163, 101, 0.15);
     }
-    .input-wrap input.erro { border-color: var(--red); }
+    .input-wrap input.erro { border-color: var(--red); background: #fef2f2; }
+    
     .toggle-senha {
       position: absolute;
-      right: 14px;
+      right: 16px;
       top: 50%;
       transform: translateY(-50%);
       background: none;
       border: none;
       cursor: pointer;
       color: var(--subtle);
-      font-size: 18px;
-      padding: 0;
-      line-height: 1;
-      transition: color 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      transition: color 0.2s;
     }
-    .toggle-senha:hover { color: var(--dim); transform: translateY(-50%) scale(1.1); }
+    .toggle-senha:hover { color: var(--primary); }
 
-    /* ── Forgot password ── */
+    /* ── Links Adicionais ── */
     .esqueci {
       display: block;
       text-align: right;
-      font-size: 12px;
-      color: var(--subtle);
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 500;
       margin-top: -8px;
-      margin-bottom: 16px;
+      margin-bottom: 24px;
       cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-      transition: color 0.15s;
+      text-decoration: none;
       background: none;
       border: none;
       font-family: var(--sans);
+      transition: opacity 0.2s;
     }
-    .esqueci:hover { color: var(--accent); }
+    .esqueci:hover { opacity: 0.8; text-decoration: underline; }
 
-    /* ── Botão principal ── */
+    /* ── Botões Principais ── */
     .btn-auth {
       width: 100%;
-      padding: 14px;
+      padding: 16px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--accent);
       color: #fff;
       font-size: 15px;
       font-weight: 600;
       font-family: var(--sans);
       cursor: pointer;
-      transition: filter 0.15s, transform 0.1s;
-      margin-top: 4px;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(195, 163, 101, 0.25);
     }
-    .btn-auth:hover { filter: brightness(1.08); transform: translateY(-1px); }
-    .btn-auth:active { transform: translateY(0); }
-    .btn-auth:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-auth:hover { background: #b09156; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(195, 163, 101, 0.35); }
+    .btn-auth:active { transform: translateY(1px); box-shadow: 0 2px 8px rgba(195, 163, 101, 0.25); }
+    .btn-auth:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* ── Spinner ── */
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-    .btn-auth.loading .spinner { display: block; }
-    .btn-auth.loading .btn-text { opacity: 0.7; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Divisor (separador) ── */
+    /* ── Separador ── */
     .divider {
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin: 20px 0;
+      gap: 16px;
+      margin: 28px 0;
     }
     .divider::before, .divider::after {
       content: '';
@@ -216,201 +267,216 @@
       height: 1px;
       background: var(--border);
     }
-    .divider span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .divider span { font-size: 13px; color: var(--subtle); font-weight: 500; }
 
-    /* ── Google btn ── */
+    /* ── Google Btn ── */
     .btn-google {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--surface);
       color: var(--primary);
       font-size: 14px;
       font-weight: 600;
       font-family: var(--sans);
       cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 12px;
+    }
+    .btn-google:hover { background: var(--bg); border-color: var(--muted); }
+    .google-icon { width: 20px; height: 20px; }
+
+    /* ── Alertas e Spinners ── */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+    .btn-auth.loading .spinner { display: block; }
+    .btn-auth.loading .btn-text { opacity: 0.8; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .alerta {
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      display: none;
+      align-items: center;
       gap: 10px;
     }
-    .btn-google:hover { background: var(--bg); transform: translateY(-1px); }
-    .btn-google:active { transform: translateY(0); }
-    .google-icon {
-      width: 18px; height: 18px;
-    }
+    .alerta.erro  { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+    .alerta.ok    { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .alerta.show  { display: flex; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── Alerta de erro ── */
-    .alerta {
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 16px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-    .alerta.erro  { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
-    .alerta.ok    { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
-    .alerta.show  { display: flex; }
-
-    /* ── Footer ── */
-    .auth-footer {
-      text-align: center;
-      margin-top: 24px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    /* ── Painel de recuperação de senha ── */
-    .recovery-panel {
-      display: none;
-    }
-    .recovery-panel.visible { display: block; }
+    /* ── Recuperação de Senha ── */
+    .recovery-panel { display: none; }
+    .recovery-panel.visible { display: block; animation: fadeIn 0.3s ease; }
     .recovery-back {
-      background: none;
+      background: var(--bg);
       border: none;
-      font-size: 13px;
-      color: var(--subtle);
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dim);
       cursor: pointer;
-      font-family: var(--sans);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 20px;
-      padding: 0;
-      transition: color 0.15s;
+      margin-bottom: 24px;
+      transition: all 0.2s;
     }
-    .recovery-back:hover { color: var(--accent); }
+    .recovery-back:hover { background: var(--border); color: var(--primary); }
     .recovery-title {
-      font-family: var(--mono);
-      font-size: 16px;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 24px;
       color: var(--bright);
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .recovery-desc {
-      font-size: 13px;
+      font-size: 14px;
       color: var(--subtle);
-      margin-bottom: 20px;
-      line-height: 1.5;
+      margin-bottom: 28px;
+      line-height: 1.6;
     }
 
     /* ── Toast ── */
     .toast {
-      position: fixed; bottom: 24px; right: 24px;
-      background: #1A1815;
+      position: fixed; bottom: 32px; right: 32px;
+      background: var(--bright);
       color: #fff;
-      padding: 12px 20px;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-      display: flex; align-items: center; gap: 8px;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+      display: flex; align-items: center; gap: 10px;
       z-index: 9999;
-      transform: translateY(80px);
+      transform: translateY(100px);
       opacity: 0;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .toast.show { transform: translateY(0); opacity: 1; }
-    .toast.sucesso { border-left: 3px solid var(--green); }
-    .toast.erro    { border-left: 3px solid var(--red); }
+    .toast.sucesso { border-left: 4px solid var(--green); }
+    .toast.erro    { border-left: 4px solid var(--red); }
 
-    /* ── Forças da senha ── */
-    .senha-forca {
-      margin-top: 8px;
-      display: none;
-    }
+    /* ── Força da Senha e Checklist ── */
+    .senha-forca { margin-top: 12px; display: none; }
     .senha-forca.visible { display: block; }
-    .forca-bar {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 4px;
-    }
-    .forca-seg {
-      flex: 1;
-      height: 3px;
-      border-radius: 2px;
-      background: var(--border);
-      transition: background 0.3s;
-    }
-    .forca-label { font-size: 11px; color: var(--subtle); font-family: var(--mono); }
+    .forca-bar { display: flex; gap: 6px; margin-bottom: 8px; }
+    .forca-seg { flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: background 0.3s ease; }
+    .forca-label { font-size: 12px; font-weight: 600; color: var(--subtle); text-align: right; }
 
-    /* ── Checklist de senha ── */
     .senha-checklist {
-      margin-top: 6px;
+      margin-top: 12px;
       display: none;
       flex-direction: column;
-      gap: 3px;
+      gap: 8px;
     }
     .senha-checklist.visible { display: flex; }
     .check-item {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--muted);
-      font-family: var(--mono);
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: color 0.2s;
     }
     .check-item.ok { color: var(--green); }
-    .check-item .c { font-size: 10px; }
+    .check-item .c { 
+      display: inline-flex; width: 16px; height: 16px; 
+      align-items: center; justify-content: center; 
+      border-radius: 50%; border: 1px solid var(--muted);
+      font-size: 10px; color: transparent;
+      transition: all 0.2s;
+    }
+    .check-item.ok .c { background: var(--green); border-color: var(--green); color: #fff; }
 
+    /* ── Responsividade ── */
+    @media (max-width: 860px) {
+      .auth-container { flex-direction: column; max-width: 480px; }
+      .brand-side { padding: 40px 32px; align-items: center; text-align: center; }
+      .brand-logo-wrap { margin-bottom: 24px; }
+      .brand-title { font-size: 28px; }
+      .brand-sub { font-size: 15px; max-width: 100%; }
+      .brand-footer { display: none; }
+      .form-side { padding: 40px 32px; max-width: 100%; }
+    }
     @media (max-width: 480px) {
-      .auth-card { padding: 28px 20px; border-radius: 16px; }
+      body { padding: 16px; }
+      .brand-side { padding: 32px 24px; }
+      .form-side { padding: 32px 24px; }
+      .brand-logo-wrap { width: 56px; height: 56px; }
     }
   </style>
 </head>
 <body>
 
-<div class="auth-wrapper">
-
-  <div class="auth-header">
-    <div class="auth-logo">
-      <svg width="40" height="40" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 0C5.373 0 0 5.373 0 12C0 15.9 1.87 19.37 4.77 21.6L12 36L19.23 21.6C22.13 19.37 24 15.9 24 12C24 5.373 18.627 0 12 0Z" fill="#C3A365"/>
-        <circle cx="12" cy="12" r="5" fill="#6A6658"/>
-      </svg>
+<div class="auth-container">
+  
+  <!-- Seção da Marca (Esquerda) -->
+  <div class="brand-side">
+    <div class="brand-header">
+      <div class="brand-logo-wrap">
+        <svg width="32" height="32" viewBox="0 0 24 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 0C5.373 0 0 5.373 0 12C0 15.9 1.87 19.37 4.77 21.6L12 36L19.23 21.6C22.13 19.37 24 15.9 24 12C24 5.373 18.627 0 12 0Z" fill="#C3A365"/>
+          <circle cx="12" cy="12" r="5" fill="#FFFFFF"/>
+        </svg>
+      </div>
+      <h1 class="brand-title">Versah <span>Estoque</span></h1>
+      <p class="brand-sub">Gestão inteligente e segura de materiais e insumos da sua clínica.</p>
     </div>
-    <div class="auth-title">Versah · EstoqueControl</div>
-    <div class="auth-sub">Gestão de materiais e insumos</div>
+    <div class="brand-footer">
+      &copy; 2024 Versah. Todos os direitos reservados.
+    </div>
   </div>
 
-  <div class="auth-card">
-
+  <!-- Seção do Formulário (Direita) -->
+  <div class="form-side">
+    
     <div class="alerta" id="alerta"></div>
 
     <div id="painel-auth">
-
+      
       <div class="tab-bar">
         <button class="tab-btn ativo" id="tab-login" onclick="mostrarAba('login')">Entrar</button>
         <button class="tab-btn" id="tab-cadastro" onclick="mostrarAba('cadastro')">Criar conta</button>
       </div>
 
+      <!-- Login -->
       <div id="form-login">
         <div class="form-group">
           <label>E-mail</label>
           <div class="input-wrap">
-            <input type="email" id="login-email" placeholder="seu@email.com"
-                   onkeydown="if(event.key==='Enter') entrar()" />
+            <input type="email" id="login-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') entrar()" />
           </div>
         </div>
         <div class="form-group">
           <label>Senha</label>
           <div class="input-wrap">
-            <input type="password" id="login-senha" placeholder="••••••••"
-                   onkeydown="if(event.key==='Enter') entrar()" />
-            <button class="toggle-senha" type="button" onclick="toggleSenha('login-senha', this)" title="Mostrar/ocultar senha">👁</button>
+            <input type="password" id="login-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter') entrar()" />
+            <button class="toggle-senha" type="button" onclick="toggleSenha('login-senha', this)" title="Mostrar/ocultar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
           </div>
         </div>
+        
         <button class="esqueci" onclick="mostrarRecuperacao()">Esqueci minha senha</button>
+        
         <button class="btn-auth" id="btn-entrar" onclick="entrar()">
           <span class="spinner"></span>
-          <span class="btn-text">Entrar</span>
+          <span class="btn-text">Acessar sistema</span>
         </button>
-        <div class="divider"><span>ou continue com</span></div>
+        
+        <div class="divider"><span>ou acesse com</span></div>
+        
         <button class="btn-google" onclick="entrarGoogle()">
           <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -422,6 +488,7 @@
         </button>
       </div>
 
+      <!-- Cadastro -->
       <div id="form-cadastro" style="display:none">
         <div class="form-group">
           <label>Nome completo</label>
@@ -438,9 +505,10 @@
         <div class="form-group">
           <label>Senha</label>
           <div class="input-wrap">
-            <input type="password" id="cad-senha" placeholder="Mínimo 8 caracteres"
-                   oninput="verificarForca(this.value)" />
-            <button class="toggle-senha" type="button" onclick="toggleSenha('cad-senha', this)" title="Mostrar/ocultar senha">👁</button>
+            <input type="password" id="cad-senha" placeholder="Mínimo 8 caracteres" oninput="verificarForca(this.value)" />
+            <button class="toggle-senha" type="button" onclick="toggleSenha('cad-senha', this)" title="Mostrar/ocultar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
           </div>
           <div class="senha-forca" id="forca-wrap">
             <div class="forca-bar">
@@ -452,24 +520,27 @@
             <div class="forca-label" id="forca-label">Fraca</div>
           </div>
           <div class="senha-checklist" id="checklist">
-            <div class="check-item" id="chk-len"><span class="c">○</span> Mínimo 8 caracteres</div>
-            <div class="check-item" id="chk-upper"><span class="c">○</span> Uma letra maiúscula</div>
-            <div class="check-item" id="chk-num"><span class="c">○</span> Um número</div>
+            <div class="check-item" id="chk-len"><span class="c">✓</span> Mínimo 8 caracteres</div>
+            <div class="check-item" id="chk-upper"><span class="c">✓</span> Uma letra maiúscula</div>
+            <div class="check-item" id="chk-num"><span class="c">✓</span> Um número</div>
           </div>
         </div>
         <div class="form-group">
           <label>Confirmar senha</label>
           <div class="input-wrap">
-            <input type="password" id="cad-confirma" placeholder="••••••••"
-                   onkeydown="if(event.key==='Enter') cadastrar()" />
-            <button class="toggle-senha" type="button" onclick="toggleSenha('cad-confirma', this)" title="Mostrar/ocultar senha">👁</button>
+            <input type="password" id="cad-confirma" placeholder="••••••••" onkeydown="if(event.key==='Enter') cadastrar()" />
+            <button class="toggle-senha" type="button" onclick="toggleSenha('cad-confirma', this)" title="Mostrar/ocultar senha">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
           </div>
         </div>
         <button class="btn-auth" id="btn-cadastrar" onclick="cadastrar()">
           <span class="spinner"></span>
           <span class="btn-text">Criar conta</span>
         </button>
-        <div class="divider"><span>ou continue com</span></div>
+        
+        <div class="divider"><span>ou acesse com</span></div>
+        
         <button class="btn-google" onclick="entrarGoogle()">
           <svg class="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -480,33 +551,35 @@
           Continuar com Google
         </button>
       </div>
+    </div>
 
-    </div><div class="recovery-panel" id="painel-recuperacao">
-      <button class="recovery-back" onclick="mostrarAuth()">← Voltar</button>
-      <div class="recovery-title">Recuperar senha</div>
+    <!-- Recuperação de Senha -->
+    <div class="recovery-panel" id="painel-recuperacao">
+      <button class="recovery-back" onclick="mostrarAuth()" title="Voltar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <h2 class="recovery-title">Recuperar senha</h2>
       <p class="recovery-desc">
-        Informe seu e-mail e enviaremos um link para você criar uma nova senha.
+        Informe seu e-mail e enviaremos um link seguro para você redefinir sua senha.
       </p>
       <div class="form-group">
-        <label>E-mail</label>
+        <label>E-mail cadastrado</label>
         <div class="input-wrap">
-          <input type="email" id="rec-email" placeholder="seu@email.com"
-                 onkeydown="if(event.key==='Enter') enviarRecuperacao()" />
+          <input type="email" id="rec-email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter') enviarRecuperacao()" />
         </div>
       </div>
       <button class="btn-auth" id="btn-recuperar" onclick="enviarRecuperacao()">
         <span class="spinner"></span>
-        <span class="btn-text">Enviar link de recuperação</span>
+        <span class="btn-text">Enviar link</span>
       </button>
     </div>
 
-  </div><div class="auth-footer">
-    Versah EstoqueControl &nbsp;·&nbsp; Dados salvos com segurança
   </div>
+</div>
 
-</div><div class="toast" id="toast"></div>
+<div class="toast" id="toast"></div>
 
-
+<!-- Lógica Original Mantida Intacta -->
 <script type="module">
   import { auth } from './firebase-config.js';
   import { 
@@ -518,8 +591,6 @@
     updateProfile 
   } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-  // Vincula as funções reais do Firebase ao escopo global (window) para os cliques dos botões HTML
-  
   window.entrar = async function() {
     limparAlerta();
     const email = document.getElementById('login-email').value.trim();
@@ -529,15 +600,11 @@
     
     try {
       setLoading('btn-entrar', true);
-      
-      // Efetua login real no Firebase
       await signInWithEmailAndPassword(auth, email, senha);
-      
       showAlerta('✓ Login realizado! Redirecionando...', 'ok');
       setTimeout(() => { window.location.href = 'login.html'; }, 10);
     } catch (error) {
       console.error("Erro no login:", error.code);
-      // Tratamento amigável de erros comuns
       if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
         showAlerta('E-mail ou senha incorretos.', 'erro');
       } else if (error.code === 'auth/invalid-email') {
@@ -564,13 +631,8 @@
 
     try {
       setLoading('btn-cadastrar', true);
-      
-      // Cria a conta real no Firebase
       const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-      
-      // Atualiza o nome do usuário no perfil dele
       await updateProfile(userCredential.user, { displayName: nome });
-      
       showAlerta('✓ Conta criada com sucesso! Redirecionando...', 'ok');
       setTimeout(() => { window.location.href = 'index.html'; }, 1200);
     } catch (error) {
@@ -590,11 +652,8 @@
   window.entrarGoogle = async function() {
     try {
       const provider = new GoogleAuthProvider();
-      // Força a exibição da tela de seleção de conta do Google
       provider.setCustomParameters({ prompt: 'select_account' });
-      
       await signInWithPopup(auth, provider);
-      
       showToast('✓ Autenticado com o Google!', 'sucesso');
       setTimeout(() => { window.location.href = 'index.html'; }, 800);
     } catch (error) {
@@ -612,10 +671,7 @@
     
     try {
       setLoading('btn-recuperar', true);
-      
-      // Envia e-mail real de redefinição de senha
       await sendPasswordResetEmail(auth, email);
-      
       showAlerta('✓ Link enviado! Verifique sua caixa de entrada.', 'ok');
     } catch (error) {
       console.error("Erro na recuperação:", error.message);
@@ -631,9 +687,6 @@
 </script>
 
 <script>
-  // ─────────────────────────────────────────────
-  // CONTROLE DE ABAS E INTERFACE (UI)
-  // ─────────────────────────────────────────────
   function mostrarAba(aba) {
     limparAlerta();
     document.getElementById('tab-login').classList.toggle('ativo', aba === 'login');
@@ -659,7 +712,11 @@
     const input = document.getElementById(inputId);
     const mostrar = input.type === 'password';
     input.type = mostrar ? 'text' : 'password';
-    btn.textContent = mostrar ? '🙈' : '👁';
+    
+    // Atualizado para usar ícones SVG mais bonitos
+    btn.innerHTML = mostrar 
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
   }
 
   function verificarForca(senha) {
@@ -697,7 +754,6 @@
   function setCheck(id, ok) {
     const el = document.getElementById(id);
     el.classList.toggle('ok', ok);
-    el.querySelector('.c').textContent = ok ? '✓' : '○';
   }
 
   function setLoading(btnId, state) {
@@ -728,4 +784,4 @@
   }
 </script>
 </body>
-</html> 
+</html>
